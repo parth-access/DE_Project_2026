@@ -22,12 +22,12 @@
 
 | Role | Name | Enrollment No. | GitHub Username |
 |------|------|----------------|-----------------|
-| Group Lead | | | |
-| Member 2 | | | |
-| Member 3 | | | |
-| Member 4 | | | |
+| Group Lead | Parth Saarthi Chhikara | 2501010325 | parth-access |
+| Member 2 | Tanishq Tyagi | 2501010474 | tanishqt25 |
+| Member 3 | Dhruv Maan | 2501010142 | dhruvm25142-end |
+| Member 4 | Aarabdh Sharma | 2501010611 | aarabdh-ICA |
 
-**Team No.:** ____ · **Section:** ____ · **Repository URL:** ____
+**Team No.:** ____ · **Section:** ____ · **Repository URL:** https://github.com/parth-access/DE_Project_2026
 
 ---
 
