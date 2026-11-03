@@ -27,7 +27,7 @@
 | Member 3 | Dhruv Maan | 2501010142 | dhruvm25142-end |
 | Member 4 | Aarabdh Sharma | 2501010611 | aarabdh-ICA |
 
-**Team No.:** ____ · **Section:** ____ · **Repository URL:** https://github.com/parth-access/DE_Project_2026
+**Team No.:** T0016 · **Section:** E · **Repository URL:** https://github.com/parth-access/DE_Project_2026
 
 ---
 
