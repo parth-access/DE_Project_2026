@@ -3,7 +3,7 @@
   "group_lead": { "name": "Parth Saarthi Chhikara", "enrollment_no": "2501010325", "github": "parth-access" },
   "members": [
     { "name": "Tanishq Tyagi", "enrollment_no": "2501010474", "github": "tanishqt25" },
-    { "name": "Dhruv Maan", "enrollment_no": "2501010142", "github": "dhruvm25142-end" },
+    { "name": "Dhruv Maan", "enrollment_no": "2501010142", "github": "dhruvm25142-eng" },
     { "name": "Aarabdh Sharma", "enrollment_no": "2501010611", "github": "aarabdh-ICA" }
   ],
   "postgres_version": "",
