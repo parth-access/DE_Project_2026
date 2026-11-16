@@ -6,6 +6,6 @@
     { "name": "Dhruv Maan", "enrollment_no": "2501010142", "github": "dhruvm25142-eng" },
     { "name": "Aarabdh Sharma", "enrollment_no": "2501010611", "github": "aarabdh-ICA" }
   ],
-  "postgres_version": "",
-  "laptop_used_for_benchmarks": ""
+  "postgres_version": "PostgreSQL 18.6",
+  "laptop_used_for_benchmarks": "MacBook Pro (Apple M4, 16 GB RAM)"
 }
