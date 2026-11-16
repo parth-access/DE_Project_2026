@@ -1,0 +1,57 @@
+=== R10 run 1 ===
+Sort  (cost=1612.32..1612.32 rows=1 width=83) (actual time=2.316..2.316 rows=2.00 loops=1)
+  Sort Key: i.sent_at DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=713
+  ->  Nested Loop  (cost=0.29..1612.31 rows=1 width=83) (actual time=2.111..2.309 rows=2.00 loops=1)
+        Buffers: shared hit=710
+        ->  Seq Scan on invitations i  (cost=0.00..1604.00 rows=1 width=72) (actual time=2.105..2.300 rows=2.00 loops=1)
+              Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+              Rows Removed by Filter: 59998
+              Buffers: shared hit=704
+        ->  Index Scan using members_pkey on members m  (cost=0.29..8.31 rows=1 width=15) (actual time=0.004..0.004 rows=1.00 loops=2)
+              Index Cond: (member_id = i.sender_id)
+              Index Searches: 2
+              Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=245
+Planning Time: 0.276 ms
+Execution Time: 2.335 ms
+=== R10 run 2 ===
+Sort  (cost=1612.32..1612.32 rows=1 width=83) (actual time=2.362..2.363 rows=2.00 loops=1)
+  Sort Key: i.sent_at DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=713
+  ->  Nested Loop  (cost=0.29..1612.31 rows=1 width=83) (actual time=2.141..2.356 rows=2.00 loops=1)
+        Buffers: shared hit=710
+        ->  Seq Scan on invitations i  (cost=0.00..1604.00 rows=1 width=72) (actual time=2.136..2.348 rows=2.00 loops=1)
+              Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+              Rows Removed by Filter: 59998
+              Buffers: shared hit=704
+        ->  Index Scan using members_pkey on members m  (cost=0.29..8.31 rows=1 width=15) (actual time=0.003..0.003 rows=1.00 loops=2)
+              Index Cond: (member_id = i.sender_id)
+              Index Searches: 2
+              Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=245
+Planning Time: 0.245 ms
+Execution Time: 2.380 ms
+=== R10 run 3 ===
+Sort  (cost=1612.32..1612.32 rows=1 width=83) (actual time=2.195..2.196 rows=2.00 loops=1)
+  Sort Key: i.sent_at DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=713
+  ->  Nested Loop  (cost=0.29..1612.31 rows=1 width=83) (actual time=1.995..2.188 rows=2.00 loops=1)
+        Buffers: shared hit=710
+        ->  Seq Scan on invitations i  (cost=0.00..1604.00 rows=1 width=72) (actual time=1.991..2.180 rows=2.00 loops=1)
+              Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+              Rows Removed by Filter: 59998
+              Buffers: shared hit=704
+        ->  Index Scan using members_pkey on members m  (cost=0.29..8.31 rows=1 width=15) (actual time=0.003..0.003 rows=1.00 loops=2)
+              Index Cond: (member_id = i.sender_id)
+              Index Searches: 2
+              Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=245
+Planning Time: 0.247 ms
+Execution Time: 2.214 ms

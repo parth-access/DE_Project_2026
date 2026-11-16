@@ -1,0 +1,63 @@
+=== R24 run 1 ===
+HashAggregate  (cost=3260.19..3260.23 rows=2 width=41) (actual time=9.210..9.212 rows=2.00 loops=1)
+  Group Key: m.is_premium
+  Batches: 1  Memory Usage: 32kB
+  Buffers: shared hit=1360
+  ->  Hash Join  (cost=1556.00..3062.02 rows=19817 width=9) (actual time=3.727..8.171 rows=19890.00 loops=1)
+        Hash Cond: (i.sender_id = m.member_id)
+        Buffers: shared hit=1360
+        ->  Seq Scan on invitations i  (cost=0.00..1454.00 rows=19817 width=12) (actual time=0.088..2.605 rows=19890.00 loops=1)
+              Filter: (sent_at >= '2026-01-01 00:00:00+05:30'::timestamp with time zone)
+              Rows Removed by Filter: 40110
+              Buffers: shared hit=704
+        ->  Hash  (cost=1056.00..1056.00 rows=40000 width=5) (actual time=3.606..3.606 rows=40000.00 loops=1)
+              Buckets: 65536  Batches: 1  Memory Usage: 2075kB
+              Buffers: shared hit=656
+              ->  Seq Scan on members m  (cost=0.00..1056.00 rows=40000 width=5) (actual time=0.002..2.144 rows=40000.00 loops=1)
+                    Buffers: shared hit=656
+Planning:
+  Buffers: shared hit=240
+Planning Time: 0.278 ms
+Execution Time: 9.257 ms
+=== R24 run 2 ===
+HashAggregate  (cost=3260.19..3260.23 rows=2 width=41) (actual time=8.981..8.983 rows=2.00 loops=1)
+  Group Key: m.is_premium
+  Batches: 1  Memory Usage: 32kB
+  Buffers: shared hit=1360
+  ->  Hash Join  (cost=1556.00..3062.02 rows=19817 width=9) (actual time=3.598..7.961 rows=19890.00 loops=1)
+        Hash Cond: (i.sender_id = m.member_id)
+        Buffers: shared hit=1360
+        ->  Seq Scan on invitations i  (cost=0.00..1454.00 rows=19817 width=12) (actual time=0.092..2.603 rows=19890.00 loops=1)
+              Filter: (sent_at >= '2026-01-01 00:00:00+05:30'::timestamp with time zone)
+              Rows Removed by Filter: 40110
+              Buffers: shared hit=704
+        ->  Hash  (cost=1056.00..1056.00 rows=40000 width=5) (actual time=3.471..3.471 rows=40000.00 loops=1)
+              Buckets: 65536  Batches: 1  Memory Usage: 2075kB
+              Buffers: shared hit=656
+              ->  Seq Scan on members m  (cost=0.00..1056.00 rows=40000 width=5) (actual time=0.002..2.087 rows=40000.00 loops=1)
+                    Buffers: shared hit=656
+Planning:
+  Buffers: shared hit=240
+Planning Time: 0.271 ms
+Execution Time: 9.029 ms
+=== R24 run 3 ===
+HashAggregate  (cost=3260.19..3260.23 rows=2 width=41) (actual time=9.387..9.388 rows=2.00 loops=1)
+  Group Key: m.is_premium
+  Batches: 1  Memory Usage: 32kB
+  Buffers: shared hit=1360
+  ->  Hash Join  (cost=1556.00..3062.02 rows=19817 width=9) (actual time=3.820..8.340 rows=19890.00 loops=1)
+        Hash Cond: (i.sender_id = m.member_id)
+        Buffers: shared hit=1360
+        ->  Seq Scan on invitations i  (cost=0.00..1454.00 rows=19817 width=12) (actual time=0.091..2.627 rows=19890.00 loops=1)
+              Filter: (sent_at >= '2026-01-01 00:00:00+05:30'::timestamp with time zone)
+              Rows Removed by Filter: 40110
+              Buffers: shared hit=704
+        ->  Hash  (cost=1056.00..1056.00 rows=40000 width=5) (actual time=3.697..3.697 rows=40000.00 loops=1)
+              Buckets: 65536  Batches: 1  Memory Usage: 2075kB
+              Buffers: shared hit=656
+              ->  Seq Scan on members m  (cost=0.00..1056.00 rows=40000 width=5) (actual time=0.002..2.170 rows=40000.00 loops=1)
+                    Buffers: shared hit=656
+Planning:
+  Buffers: shared hit=240
+Planning Time: 0.282 ms
+Execution Time: 9.436 ms

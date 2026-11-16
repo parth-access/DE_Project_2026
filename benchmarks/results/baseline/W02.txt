@@ -1,0 +1,54 @@
+=== W02 run 1 ===
+Update on invitations  (cost=1604.30..1612.32 rows=0 width=0) (actual time=2.458..2.458 rows=0.00 loops=1)
+  Buffers: shared hit=737 dirtied=1
+  InitPlan 1
+    ->  Aggregate  (cost=1604.00..1604.01 rows=1 width=4) (actual time=2.367..2.367 rows=1.00 loops=1)
+          Buffers: shared hit=704
+          ->  Seq Scan on invitations invitations_1  (cost=0.00..1604.00 rows=1 width=4) (actual time=2.150..2.365 rows=2.00 loops=1)
+                Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+                Rows Removed by Filter: 59998
+                Buffers: shared hit=704
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=50) (actual time=2.374..2.374 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=707
+Planning:
+  Buffers: shared hit=88
+Planning Time: 0.163 ms
+Execution Time: 2.497 ms
+=== W02 run 2 ===
+Update on invitations  (cost=1604.30..1612.32 rows=0 width=0) (actual time=2.366..2.367 rows=0.00 loops=1)
+  Buffers: shared hit=740 dirtied=1
+  InitPlan 1
+    ->  Aggregate  (cost=1604.00..1604.01 rows=1 width=4) (actual time=2.279..2.279 rows=1.00 loops=1)
+          Buffers: shared hit=704
+          ->  Seq Scan on invitations invitations_1  (cost=0.00..1604.00 rows=1 width=4) (actual time=2.058..2.276 rows=2.00 loops=1)
+                Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+                Rows Removed by Filter: 59998
+                Buffers: shared hit=704
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=50) (actual time=2.285..2.286 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=709
+Planning:
+  Buffers: shared hit=88
+Planning Time: 0.188 ms
+Execution Time: 2.409 ms
+=== W02 run 3 ===
+Update on invitations  (cost=1604.30..1612.32 rows=0 width=0) (actual time=2.335..2.336 rows=0.00 loops=1)
+  Buffers: shared hit=740 dirtied=1
+  InitPlan 1
+    ->  Aggregate  (cost=1604.00..1604.01 rows=1 width=4) (actual time=2.225..2.225 rows=1.00 loops=1)
+          Buffers: shared hit=704
+          ->  Seq Scan on invitations invitations_1  (cost=0.00..1604.00 rows=1 width=4) (actual time=2.003..2.222 rows=2.00 loops=1)
+                Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+                Rows Removed by Filter: 59998
+                Buffers: shared hit=704
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=50) (actual time=2.234..2.235 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=709
+Planning:
+  Buffers: shared hit=88
+Planning Time: 0.184 ms
+Execution Time: 2.380 ms

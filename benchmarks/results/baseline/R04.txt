@@ -1,0 +1,69 @@
+=== R04 run 1 ===
+Gather  (cost=4188.99..7378.03 rows=1 width=4) (actual time=7.533..8.069 rows=1.00 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=2496
+  ->  Parallel Hash Join  (cost=3188.99..6377.93 rows=1 width=4) (actual time=5.404..6.814 rows=0.50 loops=2)
+        Hash Cond: (CASE WHEN (connections.member_a = 1023) THEN connections.member_b ELSE connections.member_a END = CASE WHEN (connections_1.member_a = 356) THEN connections_1.member_b ELSE connections_1.member_a END)
+        Buffers: shared hit=2496
+        ->  Parallel Seq Scan on connections  (cost=0.00..3188.88 rows=9 width=8) (actual time=1.757..3.165 rows=7.00 loops=2)
+              Filter: ((member_a = 1023) OR (member_b = 1023))
+              Rows Removed by Filter: 109976
+              Buffers: shared hit=1248
+        ->  Parallel Hash  (cost=3188.88..3188.88 rows=9 width=8) (actual time=3.633..3.634 rows=14.00 loops=2)
+              Buckets: 1024  Batches: 1  Memory Usage: 40kB
+              Buffers: shared hit=1248
+              ->  Parallel Seq Scan on connections connections_1  (cost=0.00..3188.88 rows=9 width=8) (actual time=1.688..3.624 rows=14.00 loops=2)
+                    Filter: ((member_a = 356) OR (member_b = 356))
+                    Rows Removed by Filter: 109969
+                    Buffers: shared hit=1248
+Planning:
+  Buffers: shared hit=146
+Planning Time: 0.219 ms
+Execution Time: 8.090 ms
+=== R04 run 2 ===
+Gather  (cost=4188.99..7378.03 rows=1 width=4) (actual time=4.639..8.055 rows=1.00 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=2496
+  ->  Parallel Hash Join  (cost=3188.99..6377.93 rows=1 width=4) (actual time=5.401..6.835 rows=0.50 loops=2)
+        Hash Cond: (CASE WHEN (connections.member_a = 1023) THEN connections.member_b ELSE connections.member_a END = CASE WHEN (connections_1.member_a = 356) THEN connections_1.member_b ELSE connections_1.member_a END)
+        Buffers: shared hit=2496
+        ->  Parallel Seq Scan on connections  (cost=0.00..3188.88 rows=9 width=8) (actual time=1.802..3.234 rows=7.00 loops=2)
+              Filter: ((member_a = 1023) OR (member_b = 1023))
+              Rows Removed by Filter: 109976
+              Buffers: shared hit=1248
+        ->  Parallel Hash  (cost=3188.88..3188.88 rows=9 width=8) (actual time=3.585..3.585 rows=14.00 loops=2)
+              Buckets: 1024  Batches: 1  Memory Usage: 40kB
+              Buffers: shared hit=1248
+              ->  Parallel Seq Scan on connections connections_1  (cost=0.00..3188.88 rows=9 width=8) (actual time=1.677..3.578 rows=14.00 loops=2)
+                    Filter: ((member_a = 356) OR (member_b = 356))
+                    Rows Removed by Filter: 109969
+                    Buffers: shared hit=1248
+Planning:
+  Buffers: shared hit=146
+Planning Time: 0.223 ms
+Execution Time: 8.076 ms
+=== R04 run 3 ===
+Gather  (cost=4188.99..7378.03 rows=1 width=4) (actual time=4.421..7.743 rows=1.00 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=2496
+  ->  Parallel Hash Join  (cost=3188.99..6377.93 rows=1 width=4) (actual time=5.094..6.467 rows=0.50 loops=2)
+        Hash Cond: (CASE WHEN (connections.member_a = 1023) THEN connections.member_b ELSE connections.member_a END = CASE WHEN (connections_1.member_a = 356) THEN connections_1.member_b ELSE connections_1.member_a END)
+        Buffers: shared hit=2496
+        ->  Parallel Seq Scan on connections  (cost=0.00..3188.88 rows=9 width=8) (actual time=1.722..3.093 rows=7.00 loops=2)
+              Filter: ((member_a = 1023) OR (member_b = 1023))
+              Rows Removed by Filter: 109976
+              Buffers: shared hit=1248
+        ->  Parallel Hash  (cost=3188.88..3188.88 rows=9 width=8) (actual time=3.361..3.361 rows=14.00 loops=2)
+              Buckets: 1024  Batches: 1  Memory Usage: 40kB
+              Buffers: shared hit=1248
+              ->  Parallel Seq Scan on connections connections_1  (cost=0.00..3188.88 rows=9 width=8) (actual time=1.532..3.357 rows=14.00 loops=2)
+                    Filter: ((member_a = 356) OR (member_b = 356))
+                    Rows Removed by Filter: 109969
+                    Buffers: shared hit=1248
+Planning:
+  Buffers: shared hit=146
+Planning Time: 0.208 ms
+Execution Time: 7.763 ms

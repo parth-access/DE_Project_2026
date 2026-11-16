@@ -1,0 +1,69 @@
+=== W03 run 1 ===
+Insert on connections  (cost=1604.30..1612.33 rows=0 width=0) (actual time=2.272..2.272 rows=0.00 loops=1)
+  Conflict Resolution: NOTHING
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=740 dirtied=1
+  InitPlan 1
+    ->  Aggregate  (cost=1604.00..1604.01 rows=1 width=4) (actual time=2.186..2.186 rows=1.00 loops=1)
+          Buffers: shared hit=704
+          ->  Seq Scan on invitations invitations_1  (cost=0.00..1604.00 rows=1 width=4) (actual time=1.966..2.184 rows=2.00 loops=1)
+                Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+                Rows Removed by Filter: 59998
+                Buffers: shared hit=704
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=16) (actual time=2.192..2.193 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=709
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.183 ms
+Trigger for constraint fk_connections_a: time=0.143 calls=1
+Trigger for constraint fk_connections_b: time=0.019 calls=1
+Execution Time: 2.490 ms
+=== W03 run 2 ===
+Insert on connections  (cost=1604.30..1612.33 rows=0 width=0) (actual time=2.334..2.334 rows=0.00 loops=1)
+  Conflict Resolution: NOTHING
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=739 dirtied=1
+  InitPlan 1
+    ->  Aggregate  (cost=1604.00..1604.01 rows=1 width=4) (actual time=2.249..2.249 rows=1.00 loops=1)
+          Buffers: shared hit=704
+          ->  Seq Scan on invitations invitations_1  (cost=0.00..1604.00 rows=1 width=4) (actual time=2.048..2.246 rows=2.00 loops=1)
+                Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+                Rows Removed by Filter: 59998
+                Buffers: shared hit=704
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=16) (actual time=2.255..2.255 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=707
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.188 ms
+Trigger for constraint fk_connections_a: time=0.144 calls=1
+Trigger for constraint fk_connections_b: time=0.020 calls=1
+Execution Time: 2.551 ms
+=== W03 run 3 ===
+Insert on connections  (cost=1604.30..1612.33 rows=0 width=0) (actual time=2.198..2.199 rows=0.00 loops=1)
+  Conflict Resolution: NOTHING
+  Tuples Inserted: 1
+  Conflicting Tuples: 0
+  Buffers: shared hit=739 dirtied=1
+  InitPlan 1
+    ->  Aggregate  (cost=1604.00..1604.01 rows=1 width=4) (actual time=2.103..2.103 rows=1.00 loops=1)
+          Buffers: shared hit=704
+          ->  Seq Scan on invitations invitations_1  (cost=0.00..1604.00 rows=1 width=4) (actual time=1.901..2.101 rows=2.00 loops=1)
+                Filter: ((recipient_id = 1023) AND ((status)::text = 'PENDING'::text))
+                Rows Removed by Filter: 59998
+                Buffers: shared hit=704
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=16) (actual time=2.110..2.110 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=707
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.171 ms
+Trigger for constraint fk_connections_a: time=0.154 calls=1
+Trigger for constraint fk_connections_b: time=0.020 calls=1
+Execution Time: 2.421 ms
