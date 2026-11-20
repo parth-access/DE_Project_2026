@@ -1,0 +1,45 @@
+=== R02 run 1 ===
+Nested Loop  (cost=0.57..36.74 rows=3 width=51) (actual time=0.007..0.012 rows=4.00 loops=1)
+  Buffers: shared hit=15
+  ->  Index Scan Backward using ix_positions_member_start on positions p  (cost=0.29..11.85 rows=3 width=36) (actual time=0.004..0.005 rows=4.00 loops=1)
+        Index Cond: (member_id = 1023)
+        Index Searches: 1
+        Buffers: shared hit=3
+  ->  Index Scan using companies_pkey on companies c  (cost=0.28..8.29 rows=1 width=23) (actual time=0.001..0.001 rows=1.00 loops=4)
+        Index Cond: (company_id = p.company_id)
+        Index Searches: 4
+        Buffers: shared hit=12
+Planning:
+  Buffers: shared hit=292
+Planning Time: 0.365 ms
+Execution Time: 0.031 ms
+=== R02 run 2 ===
+Nested Loop  (cost=0.57..36.74 rows=3 width=51) (actual time=0.006..0.010 rows=4.00 loops=1)
+  Buffers: shared hit=15
+  ->  Index Scan Backward using ix_positions_member_start on positions p  (cost=0.29..11.85 rows=3 width=36) (actual time=0.004..0.004 rows=4.00 loops=1)
+        Index Cond: (member_id = 1023)
+        Index Searches: 1
+        Buffers: shared hit=3
+  ->  Index Scan using companies_pkey on companies c  (cost=0.28..8.29 rows=1 width=23) (actual time=0.001..0.001 rows=1.00 loops=4)
+        Index Cond: (company_id = p.company_id)
+        Index Searches: 4
+        Buffers: shared hit=12
+Planning:
+  Buffers: shared hit=290
+Planning Time: 0.347 ms
+Execution Time: 0.028 ms
+=== R02 run 3 ===
+Nested Loop  (cost=0.57..36.74 rows=3 width=51) (actual time=0.007..0.012 rows=4.00 loops=1)
+  Buffers: shared hit=15
+  ->  Index Scan Backward using ix_positions_member_start on positions p  (cost=0.29..11.85 rows=3 width=36) (actual time=0.004..0.005 rows=4.00 loops=1)
+        Index Cond: (member_id = 1023)
+        Index Searches: 1
+        Buffers: shared hit=3
+  ->  Index Scan using companies_pkey on companies c  (cost=0.28..8.29 rows=1 width=23) (actual time=0.001..0.001 rows=1.00 loops=4)
+        Index Cond: (company_id = p.company_id)
+        Index Searches: 4
+        Buffers: shared hit=12
+Planning:
+  Buffers: shared hit=290
+Planning Time: 0.350 ms
+Execution Time: 0.030 ms

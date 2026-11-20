@@ -1,0 +1,54 @@
+=== W02 run 1 ===
+Update on invitations  (cost=8.60..16.62 rows=0 width=0) (actual time=0.102..0.102 rows=0.00 loops=1)
+  Buffers: shared hit=39 dirtied=2
+  InitPlan 1
+    ->  Aggregate  (cost=8.30..8.31 rows=1 width=4) (actual time=0.007..0.007 rows=1.00 loops=1)
+          Buffers: shared hit=4
+          ->  Index Scan using ix_invitations_pending_recipient on invitations invitations_1  (cost=0.28..8.30 rows=1 width=4) (actual time=0.004..0.005 rows=2.00 loops=1)
+                Index Cond: (recipient_id = 1023)
+                Index Searches: 1
+                Buffers: shared hit=4
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=50) (actual time=0.015..0.015 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=7
+Planning:
+  Buffers: shared hit=132
+Planning Time: 0.240 ms
+Execution Time: 0.142 ms
+=== W02 run 2 ===
+Update on invitations  (cost=8.60..16.62 rows=0 width=0) (actual time=0.102..0.103 rows=0.00 loops=1)
+  Buffers: shared hit=42 dirtied=1
+  InitPlan 1
+    ->  Aggregate  (cost=8.30..8.31 rows=1 width=4) (actual time=0.010..0.010 rows=1.00 loops=1)
+          Buffers: shared hit=4
+          ->  Index Scan using ix_invitations_pending_recipient on invitations invitations_1  (cost=0.28..8.30 rows=1 width=4) (actual time=0.004..0.008 rows=2.00 loops=1)
+                Index Cond: (recipient_id = 1023)
+                Index Searches: 1
+                Buffers: shared hit=4
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=50) (actual time=0.018..0.018 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=9
+Planning:
+  Buffers: shared hit=132
+Planning Time: 0.258 ms
+Execution Time: 0.154 ms
+=== W02 run 3 ===
+Update on invitations  (cost=8.60..16.62 rows=0 width=0) (actual time=0.098..0.098 rows=0.00 loops=1)
+  Buffers: shared hit=42 dirtied=1
+  InitPlan 1
+    ->  Aggregate  (cost=8.30..8.31 rows=1 width=4) (actual time=0.009..0.009 rows=1.00 loops=1)
+          Buffers: shared hit=4
+          ->  Index Scan using ix_invitations_pending_recipient on invitations invitations_1  (cost=0.28..8.30 rows=1 width=4) (actual time=0.004..0.007 rows=2.00 loops=1)
+                Index Cond: (recipient_id = 1023)
+                Index Searches: 1
+                Buffers: shared hit=4
+  ->  Index Scan using invitations_pkey on invitations  (cost=0.29..8.31 rows=1 width=50) (actual time=0.016..0.017 rows=1.00 loops=1)
+        Index Cond: (invitation_id = (InitPlan 1).col1)
+        Index Searches: 1
+        Buffers: shared hit=9
+Planning:
+  Buffers: shared hit=132
+Planning Time: 0.231 ms
+Execution Time: 0.136 ms

@@ -1,0 +1,45 @@
+=== R10 run 1 ===
+Nested Loop  (cost=0.57..16.61 rows=1 width=84) (actual time=0.014..0.019 rows=2.00 loops=1)
+  Buffers: shared hit=8 read=2
+  ->  Index Scan using ix_invitations_pending_recipient on invitations i  (cost=0.28..8.30 rows=1 width=72) (actual time=0.009..0.010 rows=2.00 loops=1)
+        Index Cond: (recipient_id = 1023)
+        Index Searches: 1
+        Buffers: shared hit=2 read=2
+  ->  Index Scan using members_pkey on members m  (cost=0.29..8.31 rows=1 width=16) (actual time=0.004..0.004 rows=1.00 loops=2)
+        Index Cond: (member_id = i.sender_id)
+        Index Searches: 2
+        Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=298 read=2
+Planning Time: 0.393 ms
+Execution Time: 0.036 ms
+=== R10 run 2 ===
+Nested Loop  (cost=0.57..16.61 rows=1 width=84) (actual time=0.009..0.013 rows=2.00 loops=1)
+  Buffers: shared hit=10
+  ->  Index Scan using ix_invitations_pending_recipient on invitations i  (cost=0.28..8.30 rows=1 width=72) (actual time=0.003..0.004 rows=2.00 loops=1)
+        Index Cond: (recipient_id = 1023)
+        Index Searches: 1
+        Buffers: shared hit=4
+  ->  Index Scan using members_pkey on members m  (cost=0.29..8.31 rows=1 width=16) (actual time=0.004..0.004 rows=1.00 loops=2)
+        Index Cond: (member_id = i.sender_id)
+        Index Searches: 2
+        Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=294
+Planning Time: 0.343 ms
+Execution Time: 0.027 ms
+=== R10 run 3 ===
+Nested Loop  (cost=0.57..16.61 rows=1 width=84) (actual time=0.009..0.014 rows=2.00 loops=1)
+  Buffers: shared hit=10
+  ->  Index Scan using ix_invitations_pending_recipient on invitations i  (cost=0.28..8.30 rows=1 width=72) (actual time=0.004..0.005 rows=2.00 loops=1)
+        Index Cond: (recipient_id = 1023)
+        Index Searches: 1
+        Buffers: shared hit=4
+  ->  Index Scan using members_pkey on members m  (cost=0.29..8.31 rows=1 width=16) (actual time=0.004..0.004 rows=1.00 loops=2)
+        Index Cond: (member_id = i.sender_id)
+        Index Searches: 2
+        Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=294
+Planning Time: 0.354 ms
+Execution Time: 0.029 ms

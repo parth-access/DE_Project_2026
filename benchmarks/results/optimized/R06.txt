@@ -1,0 +1,75 @@
+=== R06 run 1 ===
+Sort  (cost=562.33..562.34 rows=5 width=67) (actual time=0.545..0.546 rows=42.00 loops=1)
+  Sort Key: j.posted_at DESC
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=347 read=23
+  ->  Nested Loop  (cost=221.06..562.27 rows=5 width=67) (actual time=0.386..0.532 rows=42.00 loops=1)
+        Buffers: shared hit=344 read=23
+        ->  Bitmap Heap Scan on jobs j  (cost=220.79..524.79 rows=5 width=52) (actual time=0.382..0.497 rows=42.00 loops=1)
+              Recheck Cond: ((status)::text = 'OPEN'::text)
+              Filter: (((title)::text ~~* '%data analyst%'::text) AND (posted_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND ((city_id = 1) OR ((workplace_type)::text = 'REMOTE'::text)))
+              Rows Removed by Filter: 1736
+              Heap Blocks: exact=212
+              Buffers: shared hit=218 read=23
+              ->  Bitmap Index Scan on ix_jobs_company_status  (cost=0.00..220.78 rows=1778 width=0) (actual time=0.115..0.115 rows=1778.00 loops=1)
+                    Index Cond: ((status)::text = 'OPEN'::text)
+                    Index Searches: 1
+                    Buffers: shared hit=6 read=23
+        ->  Index Scan using companies_pkey on companies c  (cost=0.28..7.49 rows=1 width=23) (actual time=0.001..0.001 rows=1.00 loops=42)
+              Index Cond: (company_id = j.company_id)
+              Index Searches: 42
+              Buffers: shared hit=126
+Planning:
+  Buffers: shared hit=305 read=4
+Planning Time: 0.383 ms
+Execution Time: 0.565 ms
+=== R06 run 2 ===
+Sort  (cost=562.33..562.34 rows=5 width=67) (actual time=0.507..0.508 rows=42.00 loops=1)
+  Sort Key: j.posted_at DESC
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=370
+  ->  Nested Loop  (cost=221.06..562.27 rows=5 width=67) (actual time=0.349..0.495 rows=42.00 loops=1)
+        Buffers: shared hit=367
+        ->  Bitmap Heap Scan on jobs j  (cost=220.79..524.79 rows=5 width=52) (actual time=0.347..0.463 rows=42.00 loops=1)
+              Recheck Cond: ((status)::text = 'OPEN'::text)
+              Filter: (((title)::text ~~* '%data analyst%'::text) AND (posted_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND ((city_id = 1) OR ((workplace_type)::text = 'REMOTE'::text)))
+              Rows Removed by Filter: 1736
+              Heap Blocks: exact=212
+              Buffers: shared hit=241
+              ->  Bitmap Index Scan on ix_jobs_company_status  (cost=0.00..220.78 rows=1778 width=0) (actual time=0.089..0.089 rows=1778.00 loops=1)
+                    Index Cond: ((status)::text = 'OPEN'::text)
+                    Index Searches: 1
+                    Buffers: shared hit=29
+        ->  Index Scan using companies_pkey on companies c  (cost=0.28..7.49 rows=1 width=23) (actual time=0.001..0.001 rows=1.00 loops=42)
+              Index Cond: (company_id = j.company_id)
+              Index Searches: 42
+              Buffers: shared hit=126
+Planning:
+  Buffers: shared hit=293
+Planning Time: 0.337 ms
+Execution Time: 0.525 ms
+=== R06 run 3 ===
+Sort  (cost=562.33..562.34 rows=5 width=67) (actual time=0.576..0.577 rows=42.00 loops=1)
+  Sort Key: j.posted_at DESC
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=370
+  ->  Nested Loop  (cost=221.06..562.27 rows=5 width=67) (actual time=0.399..0.564 rows=42.00 loops=1)
+        Buffers: shared hit=367
+        ->  Bitmap Heap Scan on jobs j  (cost=220.79..524.79 rows=5 width=52) (actual time=0.397..0.528 rows=42.00 loops=1)
+              Recheck Cond: ((status)::text = 'OPEN'::text)
+              Filter: (((title)::text ~~* '%data analyst%'::text) AND (posted_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND ((city_id = 1) OR ((workplace_type)::text = 'REMOTE'::text)))
+              Rows Removed by Filter: 1736
+              Heap Blocks: exact=212
+              Buffers: shared hit=241
+              ->  Bitmap Index Scan on ix_jobs_company_status  (cost=0.00..220.78 rows=1778 width=0) (actual time=0.091..0.091 rows=1778.00 loops=1)
+                    Index Cond: ((status)::text = 'OPEN'::text)
+                    Index Searches: 1
+                    Buffers: shared hit=29
+        ->  Index Scan using companies_pkey on companies c  (cost=0.28..7.49 rows=1 width=23) (actual time=0.001..0.001 rows=1.00 loops=42)
+              Index Cond: (company_id = j.company_id)
+              Index Searches: 42
+              Buffers: shared hit=126
+Planning:
+  Buffers: shared hit=293
+Planning Time: 0.347 ms
+Execution Time: 0.595 ms

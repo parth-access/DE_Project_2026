@@ -1,0 +1,27 @@
+=== R23 run 1 ===
+Index Scan using ix_members_lower_email on members  (cost=0.41..8.43 rows=1 width=17) (actual time=0.017..0.017 rows=1.00 loops=1)
+  Index Cond: (lower((email)::text) = '[redacted email]'::text)
+  Index Searches: 1
+  Buffers: shared hit=1 read=3
+Planning:
+  Buffers: shared hit=109
+Planning Time: 0.190 ms
+Execution Time: 0.032 ms
+=== R23 run 2 ===
+Index Scan using ix_members_lower_email on members  (cost=0.41..8.43 rows=1 width=17) (actual time=0.006..0.007 rows=1.00 loops=1)
+  Index Cond: (lower((email)::text) = '[redacted email]'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=107
+Planning Time: 0.184 ms
+Execution Time: 0.021 ms
+=== R23 run 3 ===
+Index Scan using ix_members_lower_email on members  (cost=0.41..8.43 rows=1 width=17) (actual time=0.006..0.006 rows=1.00 loops=1)
+  Index Cond: (lower((email)::text) = '[redacted email]'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=107
+Planning Time: 0.189 ms
+Execution Time: 0.021 ms

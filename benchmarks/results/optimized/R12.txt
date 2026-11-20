@@ -1,0 +1,63 @@
+=== R12 run 1 ===
+GroupAggregate  (cost=4.70..74.60 rows=1 width=59) (actual time=0.184..0.184 rows=1.00 loops=1)
+  Buffers: shared hit=149 read=4
+  ->  Nested Loop  (cost=4.70..74.37 rows=17 width=23) (actual time=0.030..0.165 rows=152.00 loops=1)
+        Buffers: shared hit=149 read=4
+        ->  Index Scan using ix_companies_name on companies c  (cost=0.28..8.29 rows=1 width=23) (actual time=0.013..0.013 rows=1.00 loops=1)
+              Index Cond: ((company_name)::text = 'Flipkart'::text)
+              Index Searches: 1
+              Buffers: shared hit=1 read=2
+        ->  Bitmap Heap Scan on positions p  (cost=4.42..65.90 rows=17 width=8) (actual time=0.016..0.144 rows=152.00 loops=1)
+              Recheck Cond: ((c.company_id = company_id) AND (end_date IS NULL))
+              Heap Blocks: exact=148
+              Buffers: shared hit=148 read=2
+              ->  Bitmap Index Scan on ix_positions_current_company  (cost=0.00..4.42 rows=17 width=0) (actual time=0.007..0.007 rows=152.00 loops=1)
+                    Index Cond: (company_id = c.company_id)
+                    Index Searches: 1
+                    Buffers: shared read=2
+Planning:
+  Buffers: shared hit=273
+Planning Time: 0.367 ms
+Execution Time: 0.206 ms
+=== R12 run 2 ===
+GroupAggregate  (cost=4.70..74.60 rows=1 width=59) (actual time=0.180..0.180 rows=1.00 loops=1)
+  Buffers: shared hit=153
+  ->  Nested Loop  (cost=4.70..74.37 rows=17 width=23) (actual time=0.018..0.159 rows=152.00 loops=1)
+        Buffers: shared hit=153
+        ->  Index Scan using ix_companies_name on companies c  (cost=0.28..8.29 rows=1 width=23) (actual time=0.004..0.004 rows=1.00 loops=1)
+              Index Cond: ((company_name)::text = 'Flipkart'::text)
+              Index Searches: 1
+              Buffers: shared hit=3
+        ->  Bitmap Heap Scan on positions p  (cost=4.42..65.90 rows=17 width=8) (actual time=0.013..0.147 rows=152.00 loops=1)
+              Recheck Cond: ((c.company_id = company_id) AND (end_date IS NULL))
+              Heap Blocks: exact=148
+              Buffers: shared hit=150
+              ->  Bitmap Index Scan on ix_positions_current_company  (cost=0.00..4.42 rows=17 width=0) (actual time=0.005..0.005 rows=152.00 loops=1)
+                    Index Cond: (company_id = c.company_id)
+                    Index Searches: 1
+                    Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=273
+Planning Time: 0.381 ms
+Execution Time: 0.202 ms
+=== R12 run 3 ===
+GroupAggregate  (cost=4.70..74.60 rows=1 width=59) (actual time=0.161..0.161 rows=1.00 loops=1)
+  Buffers: shared hit=153
+  ->  Nested Loop  (cost=4.70..74.37 rows=17 width=23) (actual time=0.017..0.142 rows=152.00 loops=1)
+        Buffers: shared hit=153
+        ->  Index Scan using ix_companies_name on companies c  (cost=0.28..8.29 rows=1 width=23) (actual time=0.003..0.004 rows=1.00 loops=1)
+              Index Cond: ((company_name)::text = 'Flipkart'::text)
+              Index Searches: 1
+              Buffers: shared hit=3
+        ->  Bitmap Heap Scan on positions p  (cost=4.42..65.90 rows=17 width=8) (actual time=0.012..0.131 rows=152.00 loops=1)
+              Recheck Cond: ((c.company_id = company_id) AND (end_date IS NULL))
+              Heap Blocks: exact=148
+              Buffers: shared hit=150
+              ->  Bitmap Index Scan on ix_positions_current_company  (cost=0.00..4.42 rows=17 width=0) (actual time=0.004..0.004 rows=152.00 loops=1)
+                    Index Cond: (company_id = c.company_id)
+                    Index Searches: 1
+                    Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=273
+Planning Time: 0.345 ms
+Execution Time: 0.181 ms
