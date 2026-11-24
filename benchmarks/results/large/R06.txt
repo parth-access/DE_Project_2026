@@ -1,0 +1,72 @@
+=== R06 run 1 ===
+Gather Merge  (cost=8312.51..8321.62 rows=78 width=69) (actual time=73.782..73.935 rows=864 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  Buffers: shared hit=2762 read=4080
+  ->  Sort  (cost=7312.49..7312.59 rows=39 width=69) (actual time=67.366..67.383 rows=288 loops=3)
+        Sort Key: j.posted_at DESC
+        Sort Method: quicksort  Memory: 47kB
+        Buffers: shared hit=2762 read=4080
+        Worker 0:  Sort Method: quicksort  Memory: 38kB
+        Worker 1:  Sort Method: quicksort  Memory: 65kB
+        ->  Nested Loop  (cost=0.29..7311.46 rows=39 width=69) (actual time=62.483..67.253 rows=288 loops=3)
+              Buffers: shared hit=2746 read=4080
+              ->  Parallel Seq Scan on jobs j  (cost=0.00..7044.50 rows=39 width=52) (actual time=62.433..66.137 rows=288 loops=3)
+                    Filter: (((title)::text ~~* '%data analyst%'::text) AND (posted_at >= '2026-06-01 00:00:00+00'::timestamp with time zone) AND ((status)::text = 'OPEN'::text) AND ((city_id = 1) OR ((workplace_type)::text = 'REMOTE'::text)))
+                    Rows Removed by Filter: 99712
+                    Buffers: shared hit=257 read=3975
+              ->  Index Scan using companies_pkey on companies c  (cost=0.29..6.85 rows=1 width=25) (actual time=0.004..0.004 rows=1 loops=864)
+                    Index Cond: (company_id = j.company_id)
+                    Buffers: shared hit=2489 read=105
+Planning:
+  Buffers: shared hit=281 read=6
+Planning Time: 0.881 ms
+Execution Time: 74.017 ms
+=== R06 run 2 ===
+Gather Merge  (cost=8312.51..8321.62 rows=78 width=69) (actual time=78.978..79.255 rows=864 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  Buffers: shared hit=2963 read=3879
+  ->  Sort  (cost=7312.49..7312.59 rows=39 width=69) (actual time=73.019..73.035 rows=288 loops=3)
+        Sort Key: j.posted_at DESC
+        Sort Method: quicksort  Memory: 35kB
+        Buffers: shared hit=2963 read=3879
+        Worker 0:  Sort Method: quicksort  Memory: 53kB
+        Worker 1:  Sort Method: quicksort  Memory: 62kB
+        ->  Nested Loop  (cost=0.29..7311.46 rows=39 width=69) (actual time=67.411..72.912 rows=288 loops=3)
+              Buffers: shared hit=2947 read=3879
+              ->  Parallel Seq Scan on jobs j  (cost=0.00..7044.50 rows=39 width=52) (actual time=67.375..71.907 rows=288 loops=3)
+                    Filter: (((title)::text ~~* '%data analyst%'::text) AND (posted_at >= '2026-06-01 00:00:00+00'::timestamp with time zone) AND ((status)::text = 'OPEN'::text) AND ((city_id = 1) OR ((workplace_type)::text = 'REMOTE'::text)))
+                    Rows Removed by Filter: 99712
+                    Buffers: shared hit=353 read=3879
+              ->  Index Scan using companies_pkey on companies c  (cost=0.29..6.85 rows=1 width=25) (actual time=0.003..0.003 rows=1 loops=864)
+                    Index Cond: (company_id = j.company_id)
+                    Buffers: shared hit=2594
+Planning:
+  Buffers: shared hit=287
+Planning Time: 0.662 ms
+Execution Time: 79.374 ms
+=== R06 run 3 ===
+Gather Merge  (cost=8312.51..8321.62 rows=78 width=69) (actual time=84.399..84.673 rows=864 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  Buffers: shared hit=3059 read=3783
+  ->  Sort  (cost=7312.49..7312.59 rows=39 width=69) (actual time=78.902..78.921 rows=288 loops=3)
+        Sort Key: j.posted_at DESC
+        Sort Method: quicksort  Memory: 37kB
+        Buffers: shared hit=3059 read=3783
+        Worker 0:  Sort Method: quicksort  Memory: 50kB
+        Worker 1:  Sort Method: quicksort  Memory: 64kB
+        ->  Nested Loop  (cost=0.29..7311.46 rows=39 width=69) (actual time=73.068..78.779 rows=288 loops=3)
+              Buffers: shared hit=3043 read=3783
+              ->  Parallel Seq Scan on jobs j  (cost=0.00..7044.50 rows=39 width=52) (actual time=73.022..77.655 rows=288 loops=3)
+                    Filter: (((title)::text ~~* '%data analyst%'::text) AND (posted_at >= '2026-06-01 00:00:00+00'::timestamp with time zone) AND ((status)::text = 'OPEN'::text) AND ((city_id = 1) OR ((workplace_type)::text = 'REMOTE'::text)))
+                    Rows Removed by Filter: 99712
+                    Buffers: shared hit=449 read=3783
+              ->  Index Scan using companies_pkey on companies c  (cost=0.29..6.85 rows=1 width=25) (actual time=0.004..0.004 rows=1 loops=864)
+                    Index Cond: (company_id = j.company_id)
+                    Buffers: shared hit=2594
+Planning:
+  Buffers: shared hit=287
+Planning Time: 0.657 ms
+Execution Time: 84.765 ms

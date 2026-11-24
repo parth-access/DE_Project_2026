@@ -1,0 +1,30 @@
+=== R22 run 1 ===
+Limit  (cost=0.43..1.37 rows=25 width=28) (actual time=0.086..0.091 rows=25 loops=1)
+  Buffers: shared read=4
+  ->  Index Scan Backward using ix_applications_applied_at on applications  (cost=0.43..37664.60 rows=1004393 width=28) (actual time=0.085..0.088 rows=25 loops=1)
+        Index Cond: (applied_at < '2025-07-01 17:37:35+00'::timestamp with time zone)
+        Buffers: shared read=4
+Planning:
+  Buffers: shared hit=141 read=11
+Planning Time: 0.432 ms
+Execution Time: 0.121 ms
+=== R22 run 2 ===
+Limit  (cost=0.43..1.37 rows=25 width=28) (actual time=0.017..0.022 rows=25 loops=1)
+  Buffers: shared hit=4
+  ->  Index Scan Backward using ix_applications_applied_at on applications  (cost=0.43..37664.60 rows=1004393 width=28) (actual time=0.016..0.019 rows=25 loops=1)
+        Index Cond: (applied_at < '2025-07-01 17:37:35+00'::timestamp with time zone)
+        Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=152
+Planning Time: 0.489 ms
+Execution Time: 0.058 ms
+=== R22 run 3 ===
+Limit  (cost=0.43..1.37 rows=25 width=28) (actual time=0.024..0.031 rows=25 loops=1)
+  Buffers: shared hit=4
+  ->  Index Scan Backward using ix_applications_applied_at on applications  (cost=0.43..37664.60 rows=1004393 width=28) (actual time=0.022..0.026 rows=25 loops=1)
+        Index Cond: (applied_at < '2025-07-01 17:37:35+00'::timestamp with time zone)
+        Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=152
+Planning Time: 0.462 ms
+Execution Time: 0.070 ms

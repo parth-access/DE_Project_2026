@@ -1,0 +1,69 @@
+=== R13 run 1 ===
+Gather  (cost=22368.00..117723.14 rows=215585 width=16) (actual time=570.964..896.938 rows=130313 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  Buffers: shared hit=11333 read=25583, temp read=11911 written=11972
+  ->  Parallel Hash Right Anti Join  (cost=21368.00..95164.64 rows=89827 width=16) (actual time=530.404..726.720 rows=43438 loops=3)
+        Hash Cond: (v.viewer_id = m.member_id)
+        Buffers: shared hit=11333 read=25583, temp read=11911 written=11972
+        ->  Parallel Seq Scan on profile_views v  (cost=0.00..41226.64 rows=1666664 width=4) (actual time=0.044..141.370 rows=1333331 loops=3)
+              Buffers: shared hit=2561 read=21999
+        ->  Parallel Hash  (cost=15573.33..15573.33 rows=333333 width=16) (actual time=109.799..109.800 rows=266667 loops=3)
+              Buckets: 262144  Batches: 8  Memory Usage: 7072kB
+              Buffers: shared hit=8656 read=3584, temp written=3136
+              ->  Parallel Seq Scan on members m  (cost=0.00..15573.33 rows=333333 width=16) (actual time=9.638..52.182 rows=266667 loops=3)
+                    Buffers: shared hit=8656 read=3584
+Planning:
+  Buffers: shared hit=262 read=5
+Planning Time: 0.855 ms
+JIT:
+  Functions: 30
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 0.980 ms, Inlining 0.000 ms, Optimization 0.856 ms, Emission 28.264 ms, Total 30.100 ms
+Execution Time: 915.099 ms
+=== R13 run 2 ===
+Gather  (cost=22368.00..117723.14 rows=215585 width=16) (actual time=598.991..882.494 rows=130313 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  Buffers: shared hit=11525 read=25391, temp read=11908 written=11972
+  ->  Parallel Hash Right Anti Join  (cost=21368.00..95164.64 rows=89827 width=16) (actual time=561.984..700.766 rows=43438 loops=3)
+        Hash Cond: (v.viewer_id = m.member_id)
+        Buffers: shared hit=11525 read=25391, temp read=11908 written=11972
+        ->  Parallel Seq Scan on profile_views v  (cost=0.00..41226.64 rows=1666664 width=4) (actual time=0.065..165.403 rows=1333331 loops=3)
+              Buffers: shared hit=2657 read=21903
+        ->  Parallel Hash  (cost=15573.33..15573.33 rows=333333 width=16) (actual time=127.121..127.122 rows=266667 loops=3)
+              Buckets: 262144  Batches: 8  Memory Usage: 7072kB
+              Buffers: shared hit=8752 read=3488, temp written=3136
+              ->  Parallel Seq Scan on members m  (cost=0.00..15573.33 rows=333333 width=16) (actual time=12.281..57.252 rows=266667 loops=3)
+                    Buffers: shared hit=8752 read=3488
+Planning:
+  Buffers: shared hit=267
+Planning Time: 0.815 ms
+JIT:
+  Functions: 30
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 1.246 ms, Inlining 0.000 ms, Optimization 5.490 ms, Emission 31.564 ms, Total 38.300 ms
+Execution Time: 902.067 ms
+=== R13 run 3 ===
+Gather  (cost=22368.00..117723.14 rows=215585 width=16) (actual time=596.601..915.449 rows=130313 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  Buffers: shared hit=11717 read=25199, temp read=11908 written=11972
+  ->  Parallel Hash Right Anti Join  (cost=21368.00..95164.64 rows=89827 width=16) (actual time=575.173..736.440 rows=43438 loops=3)
+        Hash Cond: (v.viewer_id = m.member_id)
+        Buffers: shared hit=11717 read=25199, temp read=11908 written=11972
+        ->  Parallel Seq Scan on profile_views v  (cost=0.00..41226.64 rows=1666664 width=4) (actual time=0.639..175.023 rows=1333331 loops=3)
+              Buffers: shared hit=2753 read=21807
+        ->  Parallel Hash  (cost=15573.33..15573.33 rows=333333 width=16) (actual time=112.258..112.259 rows=266667 loops=3)
+              Buckets: 262144  Batches: 8  Memory Usage: 7072kB
+              Buffers: shared hit=8848 read=3392, temp written=3136
+              ->  Parallel Seq Scan on members m  (cost=0.00..15573.33 rows=333333 width=16) (actual time=6.283..47.112 rows=266667 loops=3)
+                    Buffers: shared hit=8848 read=3392
+Planning:
+  Buffers: shared hit=267
+Planning Time: 0.659 ms
+JIT:
+  Functions: 30
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 0.999 ms, Inlining 0.000 ms, Optimization 0.936 ms, Emission 19.868 ms, Total 21.803 ms
+Execution Time: 935.813 ms
