@@ -4,7 +4,9 @@ Team T0016 · Section E
 
 Next year the business expects **20× the volume**. This report checks whether our optimized database (Phase 4: `sql/05_indexes.sql` + `sql/06_optimized_queries.sql`) still meets its targets at that size, explains how each query's time grows, and designs the next step to **100×**: partitioning (`sql/08_partitioning.sql`, written and tested), sharding, replicas, caching and maintenance.
 
-> **Numbers marked ⟪TANISHQ⟫ come from the large-data run** (`benchmarks/results/large/summary.csv`, 3 runs per query) and are filled in from that file. Everything else in this report was measured on the seed data with the commands in [§8](#8-how-to-reproduce).
+**Result: 29 of 30 queries met their target on the large data as they were. The one that missed, R13 (918 ms against 250 ms), is fixed: it now takes 115 ms** (`sql/07_scale_fixes.sql`, §3).
+
+How it was measured: Sir's `large_data.zip` (release `large-data`, ≈1 GB of CSVs) loaded with our own scripts, then `./benchmarks/run_benchmark.sh linkedin_large large 3 sql/06_optimized_queries.sql`. To make the growth numbers fair, the seed column below was measured **on the same machine and the same day** as the large column (PostgreSQL 16, 2 CPUs, 7 GB RAM, default settings: `work_mem` 4 MB, `shared_buffers` 128 MB). Phase 4's seed times were measured on a different machine, so they are not used for the ratios.
 
 ---
 
@@ -12,92 +14,125 @@ Next year the business expects **20× the volume**. This report checks whether o
 
 How the large run is done (README §5.1): new database → `sql/01_schema.sql` → `sql/02_load_data.sql` with `seed_data/` changed to `large_data/` → `sql/05_indexes.sql` → `ANALYZE` → `./benchmarks/run_benchmark.sh <db> large 3 sql/06_optimized_queries.sql`. The original 30 queries are **not** run on the large data.
 
-"Expected growth" is our prediction from each query's **seed plan**, made before the large run (see §2 for the reasoning). The large column then shows whether the prediction held.
+Seed and large: average of 3 runs, from `benchmarks/results/large/summary.csv` and the same script on the seed data.
 
-| Query | Group (target) | Seed (ms) | Large (ms) | Growth (large ÷ seed) | Expected growth (from the seed plan) | Meets target? | If not, what we changed |
-|-------|----------------|----------:|-----------:|----------------------:|--------------------------------------|:-------------:|-------------------------|
-| R01 | Real-time (< 5 ms) | 0.037 | ⟪TANISHQ⟫ | | ≈ same: index scans | | |
-| R02 | Real-time (< 5 ms) | 0.030 | ⟪TANISHQ⟫ | | ≈ same: index scan | | |
-| R03 | Real-time (< 5 ms) | 0.043 | ⟪TANISHQ⟫ | | ≈ same: index scan | | |
-| R04 | Real-time (< 5 ms) | 0.064 | ⟪TANISHQ⟫ | | ≈ same: index-only scan | | |
-| R05 | Search (< 250 ms) | 0.248 | ⟪TANISHQ⟫ | | ≈ same to a few ×: index-only, grows with one member's network | | |
-| R06 | Search (< 250 ms) | 0.562 | ⟪TANISHQ⟫ | | a few ×: bitmap scan, grows with matching rows | | |
-| R07 | Search (< 250 ms) | 4.647 | ⟪TANISHQ⟫ | | ≈ 20×: has a Seq Scan (≈ 93 ms projected, inside target) | | |
-| R08 | Real-time (< 5 ms) | 0.063 | ⟪TANISHQ⟫ | | ≈ same: index scan | | |
-| R09 | Real-time (< 5 ms) | 0.070 | ⟪TANISHQ⟫ | | a few ×: bitmap scan | | |
-| R10 | Real-time (< 5 ms) | 0.031 | ⟪TANISHQ⟫ | | ≈ same: index scan | | |
-| R11 | Real-time (< 5 ms) | 0.055 | ⟪TANISHQ⟫ | | ≈ same: index scan | | |
-| R12 | Search (< 250 ms) | 0.196 | ⟪TANISHQ⟫ | | a few ×: bitmap scan | | |
-| R13 | Search (< 250 ms) | 17.640 | ⟪TANISHQ⟫ | | **≈ 20×: Seq Scan of all profile_views → ≈ 350 ms projected, AT RISK** | | see §3 |
-| R14 | Report (< 5 s) | 3.186 | ⟪TANISHQ⟫ | | ≈ 20×: Seq Scan | | |
-| R15 | Report (< 5 s) | 7.676 | ⟪TANISHQ⟫ | | ≈ 20×: Seq Scan | | |
-| R16 | Report (< 5 s) | 1.506 | ⟪TANISHQ⟫ | | ≈ 20×: Seq Scan | | |
-| R17 | Report (< 5 s) | 7.424 | ⟪TANISHQ⟫ | | ≈ 20×: Seq Scan | | |
-| R18 | Search (< 250 ms) | 2.867 | ⟪TANISHQ⟫ | | up to 20×: has a Seq Scan (≈ 57 ms projected) | | |
-| R19 | Report (< 5 s) | 2.650 | ⟪TANISHQ⟫ | | up to 20× | | |
-| R20 | Report (< 5 s) | 1.273 | ⟪TANISHQ⟫ | | ≈ 20×: full index-only scan | | |
-| R21 | Report (< 5 s) | 31.345 | ⟪TANISHQ⟫ | | ≥ 20×: Seq Scan + big aggregate (≈ 630 ms projected; watch for sort spilling to disk) | | |
-| R22 | Search (< 250 ms) | 0.027 | ⟪TANISHQ⟫ | | ≈ same: keyset pagination (see §1.1) | | |
-| R23 | Real-time (< 5 ms) | 0.025 | ⟪TANISHQ⟫ | | ≈ same: index scan | | |
-| R24 | Report (< 5 s) | 7.155 | ⟪TANISHQ⟫ | | ≈ 20×: Seq Scan | | |
-| R25 | Report (< 5 s) | 23.555 | ⟪TANISHQ⟫ | | ≈ 20×: walks a whole index (≈ 470 ms projected) | | |
-| W01 | Real-time (< 5 ms) | 0.469 | ⟪TANISHQ⟫ | | ≈ same: one insert, a few index updates (log n) | | |
-| W02 | Real-time (< 5 ms) | 0.144 | ⟪TANISHQ⟫ | | ≈ same | | |
-| W03 | Real-time (< 5 ms) | 0.333 | ⟪TANISHQ⟫ | | ≈ same | | |
-| W04 | Batch (< 1 s) | 2.520 | ⟪TANISHQ⟫ | | ≈ 20×: Seq Scan (≈ 50 ms projected) | | |
-| W05 | Search (< 250 ms) | 2.030 | ⟪TANISHQ⟫ | | a few ×: bitmap scan | | |
+| Query | Group (target) | Seed (ms) | Large (ms) | Growth | What it grew like | Met? | Notes |
+|-------|----------------|----------:|-----------:|-------:|-------------------|:----:|-------|
+| R01 | Real-time (< 5 ms) | 0.084 | 0.133 | 2× | ≈ same (index lookup) | ✅ |  |
+| R02 | Real-time (< 5 ms) | 0.062 | 0.092 | 1× | ≈ same (index lookup) | ✅ |  |
+| R03 | Real-time (< 5 ms) | 0.078 | 0.126 | 2× | ≈ same (index lookup) | ✅ |  |
+| R04 | Real-time (< 5 ms) | 0.109 | 0.196 | 2× | ≈ same (index lookup) | ✅ |  |
+| R05 | Search (< 250 ms) | 0.367 | 1.813 | 5× | a few × (result grows) | ✅ |  |
+| R06 | Search (< 250 ms) | 1.405 | 79.385 | 57× | more than 20× | ✅ | `ILIKE '%…%'` cannot use a B-tree, so it scans all 300k jobs (§2.4) |
+| R07 | Search (< 250 ms) | 11.031 | 150.234 | 14× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R08 | Real-time (< 5 ms) | 0.121 | 0.135 | 1× | ≈ same (index lookup) | ✅ |  |
+| R09 | Real-time (< 5 ms) | 0.163 | 0.167 | 1× | ≈ same (index lookup) | ✅ |  |
+| R10 | Real-time (< 5 ms) | 0.058 | 0.061 | 1× | ≈ same (index lookup) | ✅ |  |
+| R11 | Real-time (< 5 ms) | 0.121 | 0.193 | 2× | ≈ same (index lookup) | ✅ |  |
+| R12 | Search (< 250 ms) | 0.324 | 2.202 | 7× | a few × (result grows) | ✅ |  |
+| R13 | Search (< 250 ms) | 23.671 | 917.660 | 39× | more than 20× | ❌ → fixed | **fixed: 918 → 115 ms** (§3) |
+| R14 | Report (< 5 s) | 8.340 | 209.403 | 25× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R15 | Report (< 5 s) | 17.019 | 217.953 | 13× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R16 | Report (< 5 s) | 2.987 | 35.174 | 12× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R17 | Report (< 5 s) | 18.754 | 322.585 | 17× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R18 | Search (< 250 ms) | 4.792 | 74.409 | 16× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R19 | Report (< 5 s) | 6.064 | 437.803 | 72× | more than 20× | ✅ | cold disk reads + small hash spill (§2.4) |
+| R20 | Report (< 5 s) | 2.347 | 48.459 | 21× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R21 | Report (< 5 s) | 26.510 | 664.451 | 25× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R22 | Search (< 250 ms) | 0.235 | 0.083 | 0.4× | ≈ same (index lookup) | ✅ |  |
+| R23 | Real-time (< 5 ms) | 0.053 | 0.122 | 2× | ≈ same (index lookup) | ✅ |  |
+| R24 | Report (< 5 s) | 20.294 | 369.052 | 18× | ≈ 20× (reads a share of a table) | ✅ |  |
+| R25 | Report (< 5 s) | 54.923 | 1133.258 | 21× | ≈ 20× (reads a share of a table) | ✅ |  |
+| W01 | Real-time (< 5 ms) | 1.038 | 1.041 | 1× | ≈ same (index lookup) | ✅ |  |
+| W02 | Real-time (< 5 ms) | 0.251 | 0.381 | 2× | ≈ same (index lookup) | ✅ |  |
+| W03 | Real-time (< 5 ms) | 0.595 | 0.667 | 1× | ≈ same (index lookup) | ✅ |  |
+| W04 | Batch (< 1 s) | 5.850 | 146.253 | 25× | ≈ 20× (reads a share of a table) | ✅ |  |
+| W05 | Search (< 250 ms) | 4.544 | 36.555 | 8× | a few × (result grows) | ✅ |  |
 
-Seed times are the Phase 4 averages from `benchmarks/results/optimized/summary.csv`.
+Raw plans of every run: `benchmarks/results/large/<ID>.txt`.
 
 ### 1.1 R22 on the large data
 
-R22 is page 4,001 of "all applications, newest first". Phase 4 replaced `OFFSET 100000` with **keyset pagination**: the page starts right after the last `applied_at` the previous page showed (`WHERE applied_at < :last_seen ORDER BY applied_at DESC LIMIT 25`), which is one index lookup on `ix_applications_applied_at` instead of reading and throwing away 100,000 rows. For the benchmark the "last seen" value is the `applied_at` of the 100,000th newest application, read once from the large data, so the test returns the same 25 rows the `OFFSET` version would. In the app, the value comes from the last row of the page the user is looking at. Its time does not depend on how many pages came before, so it stays flat on any table size.
+R22 is "page 4,001 of all applications, newest first". Phase 4 replaced `OFFSET 100000` with **keyset pagination**: the page starts right after the `applied_at` the previous page ended on (`WHERE applied_at < :last_seen ORDER BY applied_at DESC LIMIT 25`). That is one lookup on `ix_applications_applied_at` instead of reading and throwing away 100,000 rows. The value in `06_optimized_queries.sql` is the `applied_at` of row 100,000 **in the seed data**. On the large data the same value is a page much deeper into the 3 million rows, and it still takes **0.08 ms**, because keyset pagination costs the same however deep the page is. With `OFFSET` the cost grows with the page number. In the app, the value comes from the last row of the page the user is looking at.
 
 ---
 
 ## 2. Growth analysis
 
-When the data grows 20×, a query's time grows with **how much of the data it has to touch**, which the seed plan already shows:
+The data grew 20× (40,000 → 800,000 members; 150,000 → 3,000,000 applications; 200,000 → 4,000,000 profile views). A query's time grew with **how much of the data it has to touch**, and the seed plans predicted every group correctly:
 
-### 2.1 Stays about the same: index lookups (R01–R04, R08, R10, R11, R22, R23, W01–W03)
+### 2.1 Stayed about the same (≈ 1–2×): index lookups
+**R01–R04, R08–R11, R22, R23, W01–W03.** All still **under 0.7 ms** on the large data.
 
-These plans go straight to a few rows through a B-tree index. A B-tree's height grows with **log n**. We measured it on the seed data with `bt_metap()`: `members_pkey` has 2 levels, while `applications_pkey` and `ix_applications_applied_at` have 3. A B-tree page holds a few hundred keys, so 20× the rows adds at most one level, and each lookup still costs about the same 3–4 page reads. They return a fixed small number of rows (one member, one job, one page of 25), and that number does not grow with the table. **Expect growth ≈ 1×.** These are exactly the real-time, member-facing queries, which is why they have the strictest target (5 ms) and why that target is safe.
+These plans go straight to a few rows through a B-tree index, and a B-tree's height grows with **log n**. We measured it with `bt_metap()`: `members_pkey` went from 2 levels on seed to 3 on large, and `applications_pkey`, `ix_applications_applied_at` and `ix_profile_views_viewer` stay at 3 levels. 20× the rows added at most one level, so a lookup still costs about 3 page reads. These queries return a fixed small number of rows (one member, one job, one page of 25), and that does not grow with the tables. This is why the strict 5 ms target for member-facing queries is safe. R22 (keyset pagination, §1.1) is a good example: page 4,001 takes 0.08 ms on 3 million applications.
 
-⟪TANISHQ⟫ confirm from the large column: all of these should still be well under 1 ms.
+### 2.2 Grew a few times (5–8×): lookups whose result grows
+**R05 (5×), R12 (7×), W05 (8×).**
 
-### 2.2 Grows a few times: lookups whose result grows (R05, R06, R09, R12, W05)
+Still index-driven, but the number of rows they return grows with the data: one member's second-degree network (R05), a member's applications (R12), a company's applications (W05). There are more rows per member and per company at 20×, but not 20× more. All finish in under 40 ms.
 
-Still index-driven, but the number of rows they return grows with the data: one member's network (R05), the jobs matching a search (R06, R12), a company's applications (W05). At 20× there are more members and more rows per member, but not 20× more per member, so **expect 1–5×**.
+### 2.3 Grew about as much as the data (12–25×): reading a share of a table
+**R07, R14–R18, R20, R21, R24, R25, W04.**
 
-### 2.3 Grows about 20×: queries that read a fixed share of a table (R07, R13–R21, R24, R25, W04)
+These read every row (Seq Scan) or a fixed share of a table, such as all hires, all June applications or every company's totals. 20× the rows means about 20× the pages to read. The slowest is **R25 at 1.13 s**, still well inside the 5 s report target, and the batch job **W04 takes 146 ms** against 1 s. None of them spilled to disk: R21 and R25, which we expected to be at risk, sort in memory (`Sort Method: quicksort` / `top-N heapsort`).
 
-These read every row (Seq Scan) or a fixed fraction of the table, such as "applications in June 2026" or "every company's totals". 20× the rows means 20× the pages, so **expect ≈ 20×**. On seed they take 1.3–31 ms, so 20× still fits the 5 s report target with a wide margin. The one exception is **R13**, which is in the 250 ms "search" group (§3).
+### 2.4 Grew faster than the data (39–72×)
+**R06 (57×), R13 (39×), R19 (72×).** Three different reasons:
+- **R06: job search with `title ILIKE '%data analyst%'` (79 ms, target 250 ms).** On seed the matching jobs were few enough to find quickly. On large the plan is a `Parallel Seq Scan on jobs` over all 300,000 jobs, because a pattern that **starts with `%`** cannot use a B-tree index. It is still inside the target. If job search grows further, the fix is a trigram index (`CREATE EXTENSION pg_trgm; CREATE INDEX … USING gin (title gin_trgm_ops)`), which can serve `ILIKE '%…%'`.
+- **R13: never viewed a profile (918 ms, target 250 ms). The one miss.** Its hash of 800,000 members no longer fits in `work_mem` and spills to disk (`Batches: 8`, `temp written`). Fixed in §3.
+- **R19: IT-services employer report (438 ms, target 5 s).** Part of the time is cold disk reads (the first read of `companies` alone took 234 ms) and a small hash spill (`temp read=521 written=521`). It is well inside its target.
 
-### 2.4 Grows more than 20×: anything that stops fitting in memory
-
-A plan whose sort or hash table fits in `work_mem` on seed data can spill to disk at 20×, and then it gets disproportionately slower. In `EXPLAIN (ANALYZE)` this shows as `Sort Method: external merge  Disk: …` or a hash with `Batches: > 1`. The candidates are the big aggregates **R21** and **R25**.
-
-⟪TANISHQ⟫ check `benchmarks/results/large/R21.txt` and `R25.txt` for "external merge" or "Batches". If present, the fix is to raise `work_mem` for that report session (`SET work_mem = '64MB'`) or pre-compute it (§5.3).
+**The clearest "breaks at scale" example is not in our optimized set at all.** The load script `sql/02_load_data.sql` ends with a check that still runs the **original R13 (`NOT IN`)**. On the seed data it finishes in milliseconds. On the large data it was still running after **15 minutes**, and we cancelled it. With 4 million viewer ids, `NOT IN` cannot keep them in a hash table, so PostgreSQL compares every member against the whole list. This is why the README says not to run the original 30 queries on the large data, and why the Phase 4 rewrite to `NOT EXISTS` mattered for speed as well as for the wrong answer.
 
 ---
 
 ## 3. What broke at scale (and the fix)
 
-### R13: members who have never viewed a profile (target < 250 ms)
+### R13: members who have never viewed a profile (target < 250 ms): **918 ms → 115 ms**
 
-**Plan on seed (17.6 ms):** `Hash Right Anti Join`: a **Seq Scan of all 199,996 `profile_views`**, hashed against all 40,000 members. On the large data that is ≈ 4,000,000 views and ≈ 800,000 members, so ≈ 20× → **≈ 350 ms**, over the 250 ms target.
+**Before** (`benchmarks/results/large/R13.txt`, run 3: 936 ms). The anti join reads all 4 million profile views and hashes all 800,000 members, spilling to disk:
+```
+Gather (actual time=596.601..915.449 rows=130313 loops=1)
+  Workers Launched: 2
+  Buffers: shared hit=11717 read=25199, temp read=11908 written=11972
+  ->  Parallel Hash Right Anti Join (actual rows=43438 loops=3)
+        Hash Cond: (v.viewer_id = m.member_id)
+        ->  Parallel Seq Scan on profile_views v (actual rows=1333331 loops=3)
+        ->  Parallel Hash (actual rows=266667 loops=3)
+              Buckets: 262144  Batches: 8  Memory Usage: 7072kB
+              ->  Parallel Seq Scan on members m (actual rows=266667 loops=3)
+Execution Time: 935.813 ms
+```
 
-⟪TANISHQ⟫ the measured value. If it is under 250 ms, mark R13 as met and keep this section as "close to the limit".
+"Who has *never* done X" has to rule out every row of X, so this grows with `profile_views`, the fastest-growing table. What we tried, measured on the large data:
 
-The problem is the shape of the question: "who has *never* done X" has to rule out every row of X. Options, cheapest first:
-1. **Index on `profile_views (viewer_id)`** so the anti join can read the index only (`Index Only Scan`, much narrower than the table) or run as a `Merge Anti Join` on two sorted inputs. Smaller pages to read, same answer.
-2. **Keep the answer instead of recomputing it**: a `has_viewed_profile` flag on `members`, set by the view insert. R13 becomes `WHERE NOT has_viewed_profile`, an index scan that stays flat at any size. The cost is one extra update the first time a member views a profile.
+| Attempt | Plan | Time | Met? |
+|---|---|---:|:---:|
+| As written (`NOT EXISTS`) | Parallel Hash Anti Join, spills (`Batches: 8`) | 773–936 ms | ❌ |
+| `SET work_mem = '64MB'` | same plan, no spill (`Batches: 1`) | 909–929 ms | ❌ |
+| Merge Anti Join on `members_pkey` + `ix_profile_views_viewer` (after `VACUUM`) | walks a 3M-entry index | 339 ms | ❌ |
+| **Stored flag** `members.has_viewed_profile` | Seq Scan on `members` only | **110–122 ms** | ✅ |
 
-Owner of the fix and before/after plans: ⟪DHRUV / AARABDH: add here if R13 misses on the large data⟫.
+More memory removes the spill but not the cost, which is reading 4 million rows. The fix is to **keep the answer instead of recomputing it**: a `has_viewed_profile` column on `members`, filled once, and kept true by a trigger on `profile_views` that runs on a member's **first** view only. Private-mode views have `viewer_id IS NULL` and change nothing. The full fix is in `sql/07_scale_fixes.sql`. R13 becomes:
+```sql
+SELECT member_id, first_name, last_name FROM members WHERE NOT has_viewed_profile;
+```
+
+**After** (large data, after `VACUUM (ANALYZE) members`; 3 runs: 122.2, 110.4, 113.4 ms):
+```
+Seq Scan on members (actual time=0.020..117.043 rows=130313 loops=1)
+  Filter: (NOT has_viewed_profile)
+  Rows Removed by Filter: 669687
+  Buffers: shared hit=11101 read=22886
+Execution Time: 122.223 ms
+```
+
+**Same answer:** the flag gives 130,313 members, the same count as the `NOT EXISTS` query. **Trigger checked:** inserting a view by a member who had never viewed anyone flips their flag to true (inside a transaction that was rolled back). R13 no longer depends on the size of `profile_views` at all.
+
+We did not index the flag. 16 % of members have never viewed anyone, so reading `members` once is cheaper than 130,000 index lookups. If that share drops below a few percent, a partial index (`WHERE NOT has_viewed_profile`) becomes the better plan.
 
 ### Other queries over their target
-
-⟪TANISHQ⟫ list any other query from §1 marked "no", with the plan line that explains it.
+None. The other 29 met their targets as they were (§1).
 
 ---
 
@@ -105,15 +140,15 @@ Owner of the fix and before/after plans: ⟪DHRUV / AARABDH: add here if R13 mis
 
 Measured with `pg_database_size`, `pg_table_size` and `pg_indexes_size` (commands in §8):
 
-| | Seed data | Large data |
-|---|---:|---:|
-| Whole database | 134 MB | ⟪TANISHQ⟫ |
-| All tables (heap) | 61.7 MB | ⟪TANISHQ⟫ |
-| All indexes | 62.6 MB | ⟪TANISHQ⟫ |
-| Index ÷ table | 1.01 | ⟪TANISHQ⟫ |
-| `applications` (table + indexes) | 26 MB | ⟪TANISHQ⟫ |
+| | Seed data | Large data | Growth |
+|---|---:|---:|---:|
+| Whole database | 134 MB | 2,454 MB | 18× |
+| All tables (heap) | 61.9 MB | 1,202.9 MB | 19× |
+| All indexes | 62.6 MB | 1,243.1 MB | 20× |
+| Index ÷ table | 1.01 | 1.03 | |
+| `applications` (table + indexes) | 26.1 MB | 520.8 MB | 20× |
 
-On seed data **the indexes are as big as the tables**: Phase 4 added 16 indexes, and they are the price of the fast reads. At 20× both should grow about 20× (≈ 2.7 GB in total). That still fits in memory on a normal server, which is why the index lookups in §2.1 stay fast. At 100× (≈ 13 GB) the indexes of the biggest tables no longer fit comfortably, and that is the main argument for partitioning (§5.1).
+**The indexes are as big as the tables**, on both datasets. That is the price of the fast reads from Phase 4's 15 indexes, and it grew exactly with the data. The large database (2.4 GB) still fits in a normal server's memory, which is why the index lookups in §2.1 stayed fast even on a 7 GB machine. At 100× it would be ≈ 12 GB, of which ≈ 6 GB is indexes, and the biggest tables' indexes no longer fit comfortably. That is the main argument for partitioning (§5.1): each month's index is small and only recent months need to stay in memory.
 
 ---
 
@@ -197,17 +232,15 @@ Sharding by `member_id` puts each member's profile, positions, skills, applicati
 
 ## 6. Conclusion
 
-**Is the database ready for next year (20×)?** Based on the seed plans, yes for almost everything:
-- The member-facing queries are index lookups whose cost grows with log n, so they stay far under 5 ms.
-- The reports grow about 20× and still land well inside 5 s.
-- The real risk is **R13**, projected at ≈ 350 ms against a 250 ms target, and the fix is in §3.
-
-⟪TANISHQ⟫ confirm with the large-data table in §1.
+**Is the database ready for next year (20×)? Yes, with one fix.** We loaded the real large dataset (20× the seed) and ran all 30 optimized queries 3 times each:
+- **29 of 30 met their targets as written.** Every member-facing query is still under 0.7 ms (target 5 ms), the slowest report takes 1.1 s (target 5 s), and the batch job takes 146 ms (target 1 s).
+- **R13 missed** (918 ms against 250 ms), as the seed plan had warned. It is fixed with a stored flag and a trigger, and now takes **115 ms**.
+- The growth matched what the seed plans predicted: index lookups stayed flat (log n), table reads grew about 20×, and the three queries that grew faster did so for reasons we can see in their plans (§2.4).
 
 **Remaining risks:**
-1. **Memory:** at 20× the indexes are ≈ 1.4 GB. If the server has less RAM than that, index lookups start reading from disk and the 5 ms queries are the first to feel it.
+1. **Memory:** at 20× the indexes are 1.24 GB (measured). If the server has less RAM than that, index lookups start reading from disk and the 5 ms queries are the first to feel it.
 2. **Reports and writes share one server.** Until reports move to a replica (§5.3), a heavy report can slow the real-time queries.
-3. **Write cost of our indexes:** 16 extra indexes mean every W01 updates more structures. Phase 4 measured this as small, but it grows with the number of indexes, not the data, so we should not keep adding them.
+3. **Write cost of our indexes:** 15 extra indexes, plus the R13 trigger, mean every W01 updates more structures. Phase 4 measured this as small, but it grows with the number of indexes, not the data, so we should not keep adding them.
 4. **Partitioning moves the uniqueness of (job, member) into a second table** that W01 must always use. Any code that inserts applications directly would bypass it.
 5. **Second-degree network (R05)** is the one feature that gets much harder if we ever shard.
 
@@ -218,7 +251,8 @@ Sharding by `member_id` puts each member's profile, positions, skills, applicati
 | File | What it is |
 |---|---|
 | `sql/08_partitioning.sql` | Partitioned `applications` (monthly RANGE), the `application_keys` table, pruning plans, W01 on the partitioned table, archiving steps |
-| `benchmarks/results/large/` | Plans and `summary.csv` of the optimized queries on the large data ⟪TANISHQ⟫ |
+| `sql/07_scale_fixes.sql` | The R13 fix: `has_viewed_profile` flag, one-time fill and trigger |
+| `benchmarks/results/large/` | Plans and `summary.csv` of the optimized queries on the large data (3 runs each) |
 | this file | Results, growth analysis, fixes, storage, architecture |
 
 ## 8. How to reproduce
@@ -232,6 +266,10 @@ psql -d linkedin_large -f /tmp/load_large.sql
 psql -d linkedin_large -f sql/05_indexes.sql
 psql -d linkedin_large -c "ANALYZE;"
 ./benchmarks/run_benchmark.sh linkedin_large large 3 sql/06_optimized_queries.sql
+
+# R13 fix (then VACUUM, because the one-time fill rewrites most of members)
+psql -d linkedin_large -f sql/07_scale_fixes.sql
+psql -d linkedin_large -c "VACUUM (ANALYZE) linkedin.members;"
 
 # partitioning (on seed or large)
 psql -d <db> -f sql/08_partitioning.sql
