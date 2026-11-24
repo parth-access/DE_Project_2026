@@ -1,0 +1,57 @@
+=== R08 run 1 ===
+Sort  (cost=28.58..28.60 rows=6 width=16) (actual time=0.118..0.119 rows=5 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=7 read=12
+  ->  GroupAggregate  (cost=28.36..28.51 rows=6 width=16) (actual time=0.100..0.103 rows=5 loops=1)
+        Group Key: status
+        Buffers: shared hit=4 read=12
+        ->  Sort  (cost=28.36..28.39 rows=12 width=8) (actual time=0.092..0.093 rows=10 loops=1)
+              Sort Key: status
+              Sort Method: quicksort  Memory: 25kB
+              Buffers: shared hit=4 read=12
+              ->  Index Scan using uq_applications_job_member on applications a  (cost=0.43..28.14 rows=12 width=8) (actual time=0.024..0.070 rows=10 loops=1)
+                    Index Cond: (job_id = 14075)
+                    Buffers: shared hit=1 read=12
+Planning:
+  Buffers: shared hit=162 read=5
+Planning Time: 0.540 ms
+Execution Time: 0.174 ms
+=== R08 run 2 ===
+Sort  (cost=28.58..28.60 rows=6 width=16) (actual time=0.062..0.063 rows=5 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=19
+  ->  GroupAggregate  (cost=28.36..28.51 rows=6 width=16) (actual time=0.046..0.048 rows=5 loops=1)
+        Group Key: status
+        Buffers: shared hit=16
+        ->  Sort  (cost=28.36..28.39 rows=12 width=8) (actual time=0.039..0.040 rows=10 loops=1)
+              Sort Key: status
+              Sort Method: quicksort  Memory: 25kB
+              Buffers: shared hit=16
+              ->  Index Scan using uq_applications_job_member on applications a  (cost=0.43..28.14 rows=12 width=8) (actual time=0.011..0.021 rows=10 loops=1)
+                    Index Cond: (job_id = 14075)
+                    Buffers: shared hit=13
+Planning:
+  Buffers: shared hit=167
+Planning Time: 0.369 ms
+Execution Time: 0.108 ms
+=== R08 run 3 ===
+Sort  (cost=28.58..28.60 rows=6 width=16) (actual time=0.064..0.065 rows=5 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=19
+  ->  GroupAggregate  (cost=28.36..28.51 rows=6 width=16) (actual time=0.049..0.051 rows=5 loops=1)
+        Group Key: status
+        Buffers: shared hit=16
+        ->  Sort  (cost=28.36..28.39 rows=12 width=8) (actual time=0.043..0.044 rows=10 loops=1)
+              Sort Key: status
+              Sort Method: quicksort  Memory: 25kB
+              Buffers: shared hit=16
+              ->  Index Scan using uq_applications_job_member on applications a  (cost=0.43..28.14 rows=12 width=8) (actual time=0.011..0.020 rows=10 loops=1)
+                    Index Cond: (job_id = 14075)
+                    Buffers: shared hit=13
+Planning:
+  Buffers: shared hit=167
+Planning Time: 0.344 ms
+Execution Time: 0.123 ms

@@ -1,0 +1,39 @@
+=== R02 run 1 ===
+Nested Loop  (cost=0.72..36.90 rows=3 width=54) (actual time=0.024..0.056 rows=4 loops=1)
+  Buffers: shared hit=15 read=2
+  ->  Index Scan Backward using ix_positions_member_start on positions p  (cost=0.43..11.98 rows=3 width=37) (actual time=0.009..0.010 rows=4 loops=1)
+        Index Cond: (member_id = 1023)
+        Buffers: shared hit=5
+  ->  Index Scan using companies_pkey on companies c  (cost=0.29..8.31 rows=1 width=25) (actual time=0.010..0.010 rows=1 loops=4)
+        Index Cond: (company_id = p.company_id)
+        Buffers: shared hit=10 read=2
+Planning:
+  Buffers: shared hit=280
+Planning Time: 0.603 ms
+Execution Time: 0.097 ms
+=== R02 run 2 ===
+Nested Loop  (cost=0.72..36.90 rows=3 width=54) (actual time=0.021..0.039 rows=4 loops=1)
+  Buffers: shared hit=17
+  ->  Index Scan Backward using ix_positions_member_start on positions p  (cost=0.43..11.98 rows=3 width=37) (actual time=0.007..0.008 rows=4 loops=1)
+        Index Cond: (member_id = 1023)
+        Buffers: shared hit=5
+  ->  Index Scan using companies_pkey on companies c  (cost=0.29..8.31 rows=1 width=25) (actual time=0.006..0.006 rows=1 loops=4)
+        Index Cond: (company_id = p.company_id)
+        Buffers: shared hit=12
+Planning:
+  Buffers: shared hit=280
+Planning Time: 0.515 ms
+Execution Time: 0.076 ms
+=== R02 run 3 ===
+Nested Loop  (cost=0.72..36.90 rows=3 width=54) (actual time=0.029..0.052 rows=4 loops=1)
+  Buffers: shared hit=17
+  ->  Index Scan Backward using ix_positions_member_start on positions p  (cost=0.43..11.98 rows=3 width=37) (actual time=0.010..0.012 rows=4 loops=1)
+        Index Cond: (member_id = 1023)
+        Buffers: shared hit=5
+  ->  Index Scan using companies_pkey on companies c  (cost=0.29..8.31 rows=1 width=25) (actual time=0.008..0.008 rows=1 loops=4)
+        Index Cond: (company_id = p.company_id)
+        Buffers: shared hit=12
+Planning:
+  Buffers: shared hit=280
+Planning Time: 0.754 ms
+Execution Time: 0.102 ms

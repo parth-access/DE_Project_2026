@@ -1,0 +1,51 @@
+=== R03 run 1 ===
+Sort  (cost=56.61..56.65 rows=18 width=12) (actual time=0.104..0.107 rows=42 loops=1)
+  Sort Key: connections.connected_at DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=3 read=8
+  ->  Append  (cost=0.43..56.23 rows=18 width=12) (actual time=0.032..0.073 rows=42 loops=1)
+        Buffers: shared read=8
+        ->  Index Scan using pk_connections on connections  (cost=0.43..26.12 rows=11 width=12) (actual time=0.031..0.043 rows=42 loops=1)
+              Index Cond: (member_a = 1023)
+              Buffers: shared read=5
+        ->  Index Scan using ix_connections_member_b on connections connections_1  (cost=0.43..30.02 rows=7 width=12) (actual time=0.025..0.025 rows=0 loops=1)
+              Index Cond: (member_b = 1023)
+              Buffers: shared read=3
+Planning:
+  Buffers: shared hit=94 read=2
+Planning Time: 0.422 ms
+Execution Time: 0.161 ms
+=== R03 run 2 ===
+Sort  (cost=56.61..56.65 rows=18 width=12) (actual time=0.055..0.058 rows=42 loops=1)
+  Sort Key: connections.connected_at DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=11
+  ->  Append  (cost=0.43..56.23 rows=18 width=12) (actual time=0.010..0.029 rows=42 loops=1)
+        Buffers: shared hit=8
+        ->  Index Scan using pk_connections on connections  (cost=0.43..26.12 rows=11 width=12) (actual time=0.010..0.015 rows=42 loops=1)
+              Index Cond: (member_a = 1023)
+              Buffers: shared hit=5
+        ->  Index Scan using ix_connections_member_b on connections connections_1  (cost=0.43..30.02 rows=7 width=12) (actual time=0.010..0.010 rows=0 loops=1)
+              Index Cond: (member_b = 1023)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.353 ms
+Execution Time: 0.106 ms
+=== R03 run 3 ===
+Sort  (cost=56.61..56.65 rows=18 width=12) (actual time=0.060..0.063 rows=42 loops=1)
+  Sort Key: connections.connected_at DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=11
+  ->  Append  (cost=0.43..56.23 rows=18 width=12) (actual time=0.017..0.035 rows=42 loops=1)
+        Buffers: shared hit=8
+        ->  Index Scan using pk_connections on connections  (cost=0.43..26.12 rows=11 width=12) (actual time=0.016..0.021 rows=42 loops=1)
+              Index Cond: (member_a = 1023)
+              Buffers: shared hit=5
+        ->  Index Scan using ix_connections_member_b on connections connections_1  (cost=0.43..30.02 rows=7 width=12) (actual time=0.009..0.009 rows=0 loops=1)
+              Index Cond: (member_b = 1023)
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.331 ms
+Execution Time: 0.111 ms

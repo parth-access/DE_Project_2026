@@ -1,0 +1,39 @@
+=== R10 run 1 ===
+Nested Loop  (cost=0.71..16.75 rows=1 width=84) (actual time=0.037..0.038 rows=1 loops=1)
+  Buffers: shared hit=3 read=4
+  ->  Index Scan using ix_invitations_pending_recipient on invitations i  (cost=0.29..8.31 rows=1 width=72) (actual time=0.020..0.020 rows=1 loops=1)
+        Index Cond: (recipient_id = 1023)
+        Buffers: shared read=3
+  ->  Index Scan using members_pkey on members m  (cost=0.42..8.44 rows=1 width=16) (actual time=0.014..0.014 rows=1 loops=1)
+        Index Cond: (member_id = i.sender_id)
+        Buffers: shared hit=3 read=1
+Planning:
+  Buffers: shared hit=281 read=3
+Planning Time: 0.638 ms
+Execution Time: 0.067 ms
+=== R10 run 2 ===
+Nested Loop  (cost=0.71..16.75 rows=1 width=84) (actual time=0.025..0.026 rows=1 loops=1)
+  Buffers: shared hit=7
+  ->  Index Scan using ix_invitations_pending_recipient on invitations i  (cost=0.29..8.31 rows=1 width=72) (actual time=0.009..0.009 rows=1 loops=1)
+        Index Cond: (recipient_id = 1023)
+        Buffers: shared hit=3
+  ->  Index Scan using members_pkey on members m  (cost=0.42..8.44 rows=1 width=16) (actual time=0.012..0.012 rows=1 loops=1)
+        Index Cond: (member_id = i.sender_id)
+        Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=284
+Planning Time: 0.651 ms
+Execution Time: 0.062 ms
+=== R10 run 3 ===
+Nested Loop  (cost=0.71..16.75 rows=1 width=84) (actual time=0.023..0.024 rows=1 loops=1)
+  Buffers: shared hit=7
+  ->  Index Scan using ix_invitations_pending_recipient on invitations i  (cost=0.29..8.31 rows=1 width=72) (actual time=0.009..0.009 rows=1 loops=1)
+        Index Cond: (recipient_id = 1023)
+        Buffers: shared hit=3
+  ->  Index Scan using members_pkey on members m  (cost=0.42..8.44 rows=1 width=16) (actual time=0.010..0.011 rows=1 loops=1)
+        Index Cond: (member_id = i.sender_id)
+        Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=284
+Planning Time: 0.563 ms
+Execution Time: 0.055 ms
