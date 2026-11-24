@@ -1,0 +1,150 @@
+=== R15 run 1 ===
+Limit  (cost=21799.95..21800.00 rows=20 width=17) (actual time=212.976..213.864 rows=20 loops=1)
+  Buffers: shared hit=308 read=9842
+  ->  Sort  (cost=21799.95..21800.13 rows=72 width=17) (actual time=212.974..213.860 rows=20 loops=1)
+        Sort Key: (count(*)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=308 read=9842
+        ->  Finalize GroupAggregate  (cost=21779.80..21798.04 rows=72 width=17) (actual time=212.888..213.832 rows=72 loops=1)
+              Group Key: s.skill_name
+              Buffers: shared hit=305 read=9842
+              ->  Gather Merge  (cost=21779.80..21796.60 rows=144 width=17) (actual time=212.874..213.797 rows=216 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=305 read=9842
+                    ->  Sort  (cost=20779.77..20779.95 rows=72 width=17) (actual time=206.434..206.444 rows=72 loops=3)
+                          Sort Key: s.skill_name
+                          Sort Method: quicksort  Memory: 28kB
+                          Buffers: shared hit=305 read=9842
+                          Worker 0:  Sort Method: quicksort  Memory: 28kB
+                          Worker 1:  Sort Method: quicksort  Memory: 28kB
+                          ->  Partial HashAggregate  (cost=20776.83..20777.55 rows=72 width=17) (actual time=206.371..206.384 rows=72 loops=3)
+                                Group Key: s.skill_name
+                                Batches: 1  Memory Usage: 24kB
+                                Buffers: shared hit=289 read=9842
+                                Worker 0:  Batches: 1  Memory Usage: 24kB
+                                Worker 1:  Batches: 1  Memory Usage: 24kB
+                                ->  Hash Join  (cost=6621.63..19879.00 rows=179567 width=9) (actual time=101.245..179.831 rows=145333 loops=3)
+                                      Hash Cond: (js.skill_id = s.skill_id)
+                                      Buffers: shared hit=289 read=9842
+                                      ->  Parallel Hash Join  (cost=6619.01..19377.27 rows=179567 width=2) (actual time=101.185..154.700 rows=145333 loops=3)
+                                            Hash Cond: (js.job_id = j.job_id)
+                                            Buffers: shared hit=258 read=9842
+                                            ->  Parallel Seq Scan on job_skills js  (cost=0.00..11319.79 rows=547979 width=6) (actual time=0.021..41.931 rows=438383 loops=3)
+                                                  Buffers: shared read=5840
+                                            ->  Parallel Hash  (cost=6107.00..6107.00 rows=40961 width=4) (actual time=28.049..28.050 rows=33150 loops=3)
+                                                  Buckets: 131072  Batches: 1  Memory Usage: 4992kB
+                                                  Buffers: shared hit=230 read=4002
+                                                  ->  Parallel Seq Scan on jobs j  (cost=0.00..6107.00 rows=40961 width=4) (actual time=9.603..16.446 rows=33150 loops=3)
+                                                        Filter: ((posted_at >= '2025-12-31 18:30:00+00'::timestamp with time zone) AND (posted_at < '2026-12-31 18:30:00+00'::timestamp with time zone))
+                                                        Rows Removed by Filter: 66850
+                                                        Buffers: shared hit=230 read=4002
+                                      ->  Hash  (cost=1.72..1.72 rows=72 width=11) (actual time=0.033..0.034 rows=72 loops=3)
+                                            Buckets: 1024  Batches: 1  Memory Usage: 12kB
+                                            Buffers: shared hit=3
+                                            ->  Seq Scan on skills s  (cost=0.00..1.72 rows=72 width=11) (actual time=0.011..0.016 rows=72 loops=3)
+                                                  Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=376 read=4
+Planning Time: 0.832 ms
+Execution Time: 213.968 ms
+=== R15 run 2 ===
+Limit  (cost=21799.95..21800.00 rows=20 width=17) (actual time=211.213..213.320 rows=20 loops=1)
+  Buffers: shared hit=500 read=9650
+  ->  Sort  (cost=21799.95..21800.13 rows=72 width=17) (actual time=211.211..213.316 rows=20 loops=1)
+        Sort Key: (count(*)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=500 read=9650
+        ->  Finalize GroupAggregate  (cost=21779.80..21798.04 rows=72 width=17) (actual time=211.141..213.293 rows=72 loops=1)
+              Group Key: s.skill_name
+              Buffers: shared hit=497 read=9650
+              ->  Gather Merge  (cost=21779.80..21796.60 rows=144 width=17) (actual time=211.118..213.251 rows=216 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=497 read=9650
+                    ->  Sort  (cost=20779.77..20779.95 rows=72 width=17) (actual time=205.135..205.143 rows=72 loops=3)
+                          Sort Key: s.skill_name
+                          Sort Method: quicksort  Memory: 28kB
+                          Buffers: shared hit=497 read=9650
+                          Worker 0:  Sort Method: quicksort  Memory: 28kB
+                          Worker 1:  Sort Method: quicksort  Memory: 28kB
+                          ->  Partial HashAggregate  (cost=20776.83..20777.55 rows=72 width=17) (actual time=205.068..205.081 rows=72 loops=3)
+                                Group Key: s.skill_name
+                                Batches: 1  Memory Usage: 24kB
+                                Buffers: shared hit=481 read=9650
+                                Worker 0:  Batches: 1  Memory Usage: 24kB
+                                Worker 1:  Batches: 1  Memory Usage: 24kB
+                                ->  Hash Join  (cost=6621.63..19879.00 rows=179567 width=9) (actual time=100.805..176.435 rows=145333 loops=3)
+                                      Hash Cond: (js.skill_id = s.skill_id)
+                                      Buffers: shared hit=481 read=9650
+                                      ->  Parallel Hash Join  (cost=6619.01..19377.27 rows=179567 width=2) (actual time=100.731..152.793 rows=145333 loops=3)
+                                            Hash Cond: (js.job_id = j.job_id)
+                                            Buffers: shared hit=450 read=9650
+                                            ->  Parallel Seq Scan on job_skills js  (cost=0.00..11319.79 rows=547979 width=6) (actual time=0.025..45.111 rows=438383 loops=3)
+                                                  Buffers: shared hit=96 read=5744
+                                            ->  Parallel Hash  (cost=6107.00..6107.00 rows=40961 width=4) (actual time=26.478..26.479 rows=33150 loops=3)
+                                                  Buckets: 131072  Batches: 1  Memory Usage: 4928kB
+                                                  Buffers: shared hit=326 read=3906
+                                                  ->  Parallel Seq Scan on jobs j  (cost=0.00..6107.00 rows=40961 width=4) (actual time=9.444..15.515 rows=33150 loops=3)
+                                                        Filter: ((posted_at >= '2025-12-31 18:30:00+00'::timestamp with time zone) AND (posted_at < '2026-12-31 18:30:00+00'::timestamp with time zone))
+                                                        Rows Removed by Filter: 66850
+                                                        Buffers: shared hit=326 read=3906
+                                      ->  Hash  (cost=1.72..1.72 rows=72 width=11) (actual time=0.043..0.043 rows=72 loops=3)
+                                            Buckets: 1024  Batches: 1  Memory Usage: 12kB
+                                            Buffers: shared hit=3
+                                            ->  Seq Scan on skills s  (cost=0.00..1.72 rows=72 width=11) (actual time=0.018..0.024 rows=72 loops=3)
+                                                  Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=380
+Planning Time: 0.693 ms
+Execution Time: 213.408 ms
+=== R15 run 3 ===
+Limit  (cost=21799.95..21800.00 rows=20 width=17) (actual time=223.522..226.367 rows=20 loops=1)
+  Buffers: shared hit=692 read=9458
+  ->  Sort  (cost=21799.95..21800.13 rows=72 width=17) (actual time=223.520..226.362 rows=20 loops=1)
+        Sort Key: (count(*)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=692 read=9458
+        ->  Finalize GroupAggregate  (cost=21779.80..21798.04 rows=72 width=17) (actual time=223.390..226.329 rows=72 loops=1)
+              Group Key: s.skill_name
+              Buffers: shared hit=689 read=9458
+              ->  Gather Merge  (cost=21779.80..21796.60 rows=144 width=17) (actual time=223.373..226.268 rows=216 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=689 read=9458
+                    ->  Sort  (cost=20779.77..20779.95 rows=72 width=17) (actual time=217.169..217.180 rows=72 loops=3)
+                          Sort Key: s.skill_name
+                          Sort Method: quicksort  Memory: 28kB
+                          Buffers: shared hit=689 read=9458
+                          Worker 0:  Sort Method: quicksort  Memory: 28kB
+                          Worker 1:  Sort Method: quicksort  Memory: 28kB
+                          ->  Partial HashAggregate  (cost=20776.83..20777.55 rows=72 width=17) (actual time=217.108..217.122 rows=72 loops=3)
+                                Group Key: s.skill_name
+                                Batches: 1  Memory Usage: 24kB
+                                Buffers: shared hit=673 read=9458
+                                Worker 0:  Batches: 1  Memory Usage: 24kB
+                                Worker 1:  Batches: 1  Memory Usage: 24kB
+                                ->  Hash Join  (cost=6621.63..19879.00 rows=179567 width=9) (actual time=101.760..187.750 rows=145333 loops=3)
+                                      Hash Cond: (js.skill_id = s.skill_id)
+                                      Buffers: shared hit=673 read=9458
+                                      ->  Parallel Hash Join  (cost=6619.01..19377.27 rows=179567 width=2) (actual time=101.703..160.022 rows=145333 loops=3)
+                                            Hash Cond: (js.job_id = j.job_id)
+                                            Buffers: shared hit=642 read=9458
+                                            ->  Parallel Seq Scan on job_skills js  (cost=0.00..11319.79 rows=547979 width=6) (actual time=0.023..51.178 rows=438383 loops=3)
+                                                  Buffers: shared hit=192 read=5648
+                                            ->  Parallel Hash  (cost=6107.00..6107.00 rows=40961 width=4) (actual time=26.423..26.424 rows=33150 loops=3)
+                                                  Buckets: 131072  Batches: 1  Memory Usage: 4960kB
+                                                  Buffers: shared hit=422 read=3810
+                                                  ->  Parallel Seq Scan on jobs j  (cost=0.00..6107.00 rows=40961 width=4) (actual time=9.841..16.040 rows=33150 loops=3)
+                                                        Filter: ((posted_at >= '2025-12-31 18:30:00+00'::timestamp with time zone) AND (posted_at < '2026-12-31 18:30:00+00'::timestamp with time zone))
+                                                        Rows Removed by Filter: 66850
+                                                        Buffers: shared hit=422 read=3810
+                                      ->  Hash  (cost=1.72..1.72 rows=72 width=11) (actual time=0.030..0.031 rows=72 loops=3)
+                                            Buckets: 1024  Batches: 1  Memory Usage: 12kB
+                                            Buffers: shared hit=3
+                                            ->  Seq Scan on skills s  (cost=0.00..1.72 rows=72 width=11) (actual time=0.009..0.014 rows=72 loops=3)
+                                                  Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=380
+Planning Time: 0.807 ms
+Execution Time: 226.483 ms

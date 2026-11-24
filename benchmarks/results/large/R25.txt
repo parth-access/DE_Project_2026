@@ -1,0 +1,69 @@
+=== R25 run 1 ===
+Limit  (cost=186671.53..186671.78 rows=100 width=16) (actual time=1085.267..1085.279 rows=100 loops=1)
+  Buffers: shared hit=81 read=23877
+  ->  Sort  (cost=186671.53..188337.19 rows=666264 width=16) (actual time=1078.819..1078.824 rows=100 loops=1)
+        Sort Key: ((t.start_date - t.prev_end)) DESC, t.member_id
+        Sort Method: top-N heapsort  Memory: 28kB
+        Buffers: shared hit=81 read=23877
+        ->  Subquery Scan on t  (cost=0.43..161207.39 rows=666264 width=16) (actual time=0.091..1063.412 rows=132124 loops=1)
+              Filter: ((t.start_date - t.prev_end) > 182)
+              Rows Removed by Filter: 1866668
+              Buffers: shared hit=78 read=23877
+              ->  WindowAgg  (cost=0.43..129559.85 rows=1998792 width=12) (actual time=0.059..960.537 rows=1998792 loops=1)
+                    Buffers: shared hit=78 read=23877
+                    ->  Index Scan using ix_positions_member_start on positions  (cost=0.43..94580.99 rows=1998792 width=12) (actual time=0.046..332.315 rows=1998792 loops=1)
+                          Buffers: shared hit=78 read=23877
+Planning:
+  Buffers: shared hit=111 read=4
+Planning Time: 0.373 ms
+JIT:
+  Functions: 11
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 0.451 ms, Inlining 0.000 ms, Optimization 0.295 ms, Emission 6.161 ms, Total 6.907 ms
+Execution Time: 1098.885 ms
+=== R25 run 2 ===
+Limit  (cost=186671.53..186671.78 rows=100 width=16) (actual time=1125.994..1126.008 rows=100 loops=1)
+  Buffers: shared hit=95 read=23863
+  ->  Sort  (cost=186671.53..188337.19 rows=666264 width=16) (actual time=1118.652..1118.658 rows=100 loops=1)
+        Sort Key: ((t.start_date - t.prev_end)) DESC, t.member_id
+        Sort Method: top-N heapsort  Memory: 28kB
+        Buffers: shared hit=95 read=23863
+        ->  Subquery Scan on t  (cost=0.43..161207.39 rows=666264 width=16) (actual time=0.092..1103.395 rows=132124 loops=1)
+              Filter: ((t.start_date - t.prev_end) > 182)
+              Rows Removed by Filter: 1866668
+              Buffers: shared hit=92 read=23863
+              ->  WindowAgg  (cost=0.43..129559.85 rows=1998792 width=12) (actual time=0.068..992.025 rows=1998792 loops=1)
+                    Buffers: shared hit=92 read=23863
+                    ->  Index Scan using ix_positions_member_start on positions  (cost=0.43..94580.99 rows=1998792 width=12) (actual time=0.050..346.011 rows=1998792 loops=1)
+                          Buffers: shared hit=92 read=23863
+Planning:
+  Buffers: shared hit=111 read=4
+Planning Time: 0.528 ms
+JIT:
+  Functions: 11
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 0.524 ms, Inlining 0.000 ms, Optimization 0.381 ms, Emission 6.969 ms, Total 7.874 ms
+Execution Time: 1142.238 ms
+=== R25 run 3 ===
+Limit  (cost=186671.53..186671.78 rows=100 width=16) (actual time=1143.488..1143.500 rows=100 loops=1)
+  Buffers: shared hit=145 read=23813
+  ->  Sort  (cost=186671.53..188337.19 rows=666264 width=16) (actual time=1137.809..1137.814 rows=100 loops=1)
+        Sort Key: ((t.start_date - t.prev_end)) DESC, t.member_id
+        Sort Method: top-N heapsort  Memory: 28kB
+        Buffers: shared hit=145 read=23813
+        ->  Subquery Scan on t  (cost=0.43..161207.39 rows=666264 width=16) (actual time=0.084..1122.074 rows=132124 loops=1)
+              Filter: ((t.start_date - t.prev_end) > 182)
+              Rows Removed by Filter: 1866668
+              Buffers: shared hit=142 read=23813
+              ->  WindowAgg  (cost=0.43..129559.85 rows=1998792 width=12) (actual time=0.064..1013.028 rows=1998792 loops=1)
+                    Buffers: shared hit=142 read=23813
+                    ->  Index Scan using ix_positions_member_start on positions  (cost=0.43..94580.99 rows=1998792 width=12) (actual time=0.050..351.342 rows=1998792 loops=1)
+                          Buffers: shared hit=142 read=23813
+Planning:
+  Buffers: shared hit=106 read=9
+Planning Time: 0.454 ms
+JIT:
+  Functions: 11
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 0.427 ms, Inlining 0.000 ms, Optimization 0.304 ms, Emission 5.382 ms, Total 6.113 ms
+Execution Time: 1158.650 ms

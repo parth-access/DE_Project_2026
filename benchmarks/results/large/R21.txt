@@ -1,0 +1,84 @@
+=== R21 run 1 ===
+Sort  (cost=140055.52..140055.70 rows=72 width=17) (actual time=606.013..606.018 rows=72 loops=1)
+  Sort Key: ms.endorsements DESC
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=234 read=16055
+  ->  Nested Loop  (cost=0.43..140053.29 rows=72 width=17) (actual time=5.172..605.852 rows=72 loops=1)
+        Join Filter: (s.skill_id = ms.skill_id)
+        Rows Removed by Join Filter: 2556
+        Buffers: shared hit=231 read=16055
+        ->  Result  (cost=0.43..139973.96 rows=72 width=10) (actual time=5.141..605.200 rows=72 loops=1)
+              Buffers: shared hit=230 read=16055
+              ->  Unique  (cost=0.43..139973.96 rows=72 width=10) (actual time=0.037..600.014 rows=72 loops=1)
+                    Buffers: shared hit=230 read=16055
+                    ->  Index Only Scan using ix_member_skills_skill_endorse on member_skills ms  (cost=0.43..129350.32 rows=4249459 width=10) (actual time=0.034..412.212 rows=4249459 loops=1)
+                          Heap Fetches: 0
+                          Buffers: shared hit=230 read=16055
+        ->  Materialize  (cost=0.00..2.08 rows=72 width=11) (actual time=0.001..0.004 rows=36 loops=72)
+              Buffers: shared hit=1
+              ->  Seq Scan on skills s  (cost=0.00..1.72 rows=72 width=11) (actual time=0.021..0.109 rows=72 loops=1)
+                    Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=160
+Planning Time: 0.404 ms
+JIT:
+  Functions: 9
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 0.271 ms, Inlining 0.000 ms, Optimization 0.316 ms, Emission 4.790 ms, Total 5.377 ms
+Execution Time: 618.703 ms
+=== R21 run 2 ===
+Sort  (cost=140055.52..140055.70 rows=72 width=17) (actual time=693.567..693.573 rows=72 loops=1)
+  Sort Key: ms.endorsements DESC
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=234 read=16055
+  ->  Nested Loop  (cost=0.43..140053.29 rows=72 width=17) (actual time=7.632..693.418 rows=72 loops=1)
+        Join Filter: (s.skill_id = ms.skill_id)
+        Rows Removed by Join Filter: 2556
+        Buffers: shared hit=231 read=16055
+        ->  Result  (cost=0.43..139973.96 rows=72 width=10) (actual time=7.593..692.755 rows=72 loops=1)
+              Buffers: shared hit=230 read=16055
+              ->  Unique  (cost=0.43..139973.96 rows=72 width=10) (actual time=0.054..685.110 rows=72 loops=1)
+                    Buffers: shared hit=230 read=16055
+                    ->  Index Only Scan using ix_member_skills_skill_endorse on member_skills ms  (cost=0.43..129350.32 rows=4249459 width=10) (actual time=0.051..464.978 rows=4249459 loops=1)
+                          Heap Fetches: 0
+                          Buffers: shared hit=230 read=16055
+        ->  Materialize  (cost=0.00..2.08 rows=72 width=11) (actual time=0.001..0.005 rows=36 loops=72)
+              Buffers: shared hit=1
+              ->  Seq Scan on skills s  (cost=0.00..1.72 rows=72 width=11) (actual time=0.026..0.122 rows=72 loops=1)
+                    Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=160
+Planning Time: 0.490 ms
+JIT:
+  Functions: 9
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 0.534 ms, Inlining 0.000 ms, Optimization 0.441 ms, Emission 7.100 ms, Total 8.075 ms
+Execution Time: 710.983 ms
+=== R21 run 3 ===
+Sort  (cost=140055.52..140055.70 rows=72 width=17) (actual time=649.858..649.863 rows=72 loops=1)
+  Sort Key: ms.endorsements DESC
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=234 read=16055
+  ->  Nested Loop  (cost=0.43..140053.29 rows=72 width=17) (actual time=5.597..649.727 rows=72 loops=1)
+        Join Filter: (s.skill_id = ms.skill_id)
+        Rows Removed by Join Filter: 2556
+        Buffers: shared hit=231 read=16055
+        ->  Result  (cost=0.43..139973.96 rows=72 width=10) (actual time=5.560..649.016 rows=72 loops=1)
+              Buffers: shared hit=230 read=16055
+              ->  Unique  (cost=0.43..139973.96 rows=72 width=10) (actual time=0.038..643.409 rows=72 loops=1)
+                    Buffers: shared hit=230 read=16055
+                    ->  Index Only Scan using ix_member_skills_skill_endorse on member_skills ms  (cost=0.43..129350.32 rows=4249459 width=10) (actual time=0.035..435.715 rows=4249459 loops=1)
+                          Heap Fetches: 0
+                          Buffers: shared hit=230 read=16055
+        ->  Materialize  (cost=0.00..2.08 rows=72 width=11) (actual time=0.001..0.005 rows=36 loops=72)
+              Buffers: shared hit=1
+              ->  Seq Scan on skills s  (cost=0.00..1.72 rows=72 width=11) (actual time=0.024..0.122 rows=72 loops=1)
+                    Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=160
+Planning Time: 0.505 ms
+JIT:
+  Functions: 9
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 0.371 ms, Inlining 0.000 ms, Optimization 0.265 ms, Emission 5.261 ms, Total 5.897 ms
+Execution Time: 663.666 ms
